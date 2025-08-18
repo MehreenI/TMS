@@ -1,0 +1,277 @@
+﻿@page
+@model TMS.Pages.Task.IndexModel
+<div id="all-tasks-view" class="content-view">
+    <div class="slide-in">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">All Tasks</h2>
+                <p class="text-gray-600">Manage and monitor all tasks</p>
+            </div>
+            <button asp-page="/Create" class="btn-primary px-6 py-3 rounded-lg font-medium">
+                <i data-lucide="plus" class="w-5 h-5 inline mr-2"></i>Add Task
+            </button>
+        </div>
+
+        <!-- Task Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="content-card p-6 hover:transform hover:translateY(-2px) transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Total Tasks</p>
+                        <p class="text-2xl font-bold text-gray-800">1,247</p>
+                    </div>
+                    <div class="p-3 bg-blue-600 rounded-lg">
+                        <i data-lucide="clipboard-list" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card p-6 hover:transform hover:translateY(-2px) transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">In Progress</p>
+                        <p class="text-2xl font-bold text-gray-800">289</p>
+                    </div>
+                    <div class="p-3 bg-orange-600 rounded-lg">
+                        <i data-lucide="play-circle" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card p-6 hover:transform hover:translateY(-2px) transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Completed</p>
+                        <p class="text-2xl font-bold text-gray-800">892</p>
+                    </div>
+                    <div class="p-3 bg-green-600 rounded-lg">
+                        <i data-lucide="check-circle" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card p-6 hover:transform hover:translateY(-2px) transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Overdue</p>
+                        <p class="text-2xl font-bold text-gray-800">66</p>
+                    </div>
+                    <div class="p-3 bg-red-600 rounded-lg">
+                        <i data-lucide="alert-triangle" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="content-card p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                    <input type="text" placeholder="Search tasks..." class="w-full pl-12 pr-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-500">
+                </div>
+                <select class="px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                    <option value="">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="in-progress">In Progress</option>
+                    <option value="completed">Completed</option>
+                    <option value="overdue">Overdue</option>
+                </select>
+                <select class="px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                    <option value="">All Priority</option>
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                    <option value="critical">Critical</option>
+                </select>
+                <select class="px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                    <option value="">All Assignees</option>
+                    <option value="john">John Doe</option>
+                    <option value="sarah">Sarah Johnson</option>
+                    <option value="mike">Mike Chen</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Tasks Table -->
+        <div class="content-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-red-600">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-white font-semibold">
+                                <input type="checkbox" class="rounded" />
+                            </th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Task</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Assignee</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Priority</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Status</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Due Date</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Progress</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" class="rounded" />
+                            </td>
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="text-gray-800 font-medium">Database Optimization</p>
+                                    <p class="text-gray-600 text-sm">Optimize database queries for better performance</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-semibold text-xs">JD</span>
+                                    </div>
+                                    <span class="text-gray-800 font-medium">John Doe</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-red-600 text-white rounded-full text-sm font-medium">High</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">In Progress</span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-700">Aug 25, 2025</td>
+                            <td class="px-6 py-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-red-600 h-2 rounded-full" style="width: 65%"></div>
+                                </div>
+                                <span class="text-xs text-gray-600 mt-1">65%</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="editTask('task-001')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                                        <i data-lucide="edit" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="viewTask('task-001')" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="View">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="showDeleteTaskModal('task-001')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" class="rounded" />
+                            </td>
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="text-gray-800 font-medium">UI Design Update</p>
+                                    <p class="text-gray-600 text-sm">Update user interface components</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-semibold text-xs">SJ</span>
+                                    </div>
+                                    <span class="text-gray-800 font-medium">Sarah Johnson</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-orange-500 text-white rounded-full text-sm font-medium">Medium</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">Completed</span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-700">Aug 20, 2025</td>
+                            <td class="px-6 py-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-green-600 h-2 rounded-full" style="width: 100%"></div>
+                                </div>
+                                <span class="text-xs text-gray-600 mt-1">100%</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="editTask('task-002')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                                        <i data-lucide="edit" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="viewTask('task-002')" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="View">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="showDeleteTaskModal('task-002')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <input type="checkbox" class="rounded" />
+                            </td>
+                            <td class="px-6 py-4">
+                                <div>
+                                    <p class="text-gray-800 font-medium">API Integration</p>
+                                    <p class="text-gray-600 text-sm">Integrate third-party payment API</p>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-8 h-8 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                                        <span class="text-white font-semibold text-xs">MC</span>
+                                    </div>
+                                    <span class="text-gray-800 font-medium">Mike Chen</span>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-purple-600 text-white rounded-full text-sm font-medium">Critical</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm font-medium">Pending</span>
+                            </td>
+                            <td class="px-6 py-4 text-gray-700">Aug 30, 2025</td>
+                            <td class="px-6 py-4">
+                                <div class="w-full bg-gray-200 rounded-full h-2">
+                                    <div class="bg-blue-600 h-2 rounded-full" style="width: 25%"></div>
+                                </div>
+                                <span class="text-xs text-gray-600 mt-1">25%</span>
+                            </td>
+                            <td class="px-6 py-4">
+                                <div class="flex items-center space-x-2">
+                                    <button onclick="editTask('task-003')" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                                        <i data-lucide="edit" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="viewTask('task-003')" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="View">
+                                        <i data-lucide="eye" class="w-4 h-4"></i>
+                                    </button>
+                                    <button onclick="showDeleteTaskModal('task-003')" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                <div class="flex items-center justify-between">
+                    <div class="text-gray-600 text-sm">
+                        Showing 1 to 10 of 1,247 tasks
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button class="px-3 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-colors border border-gray-300">
+                            Previous
+                        </button>
+                        <button class="px-3 py-2 bg-red-600 text-white rounded-lg">1</button>
+                        <button class="px-3 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-colors border border-gray-300">2</button>
+                        <button class="px-3 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-colors border border-gray-300">3</button>
+                        <button class="px-3 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-colors border border-gray-300">
+                            Next
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

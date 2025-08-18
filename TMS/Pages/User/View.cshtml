@@ -1,0 +1,111 @@
+﻿@page
+@model TMS.Pages.User.ViewModel
+<div id="view-user-view" class="content-view">
+    <div class="slide-in">
+        <div class="flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">User Details</h1>
+            <div class="flex space-x-3">
+                <button onclick="editUser(currentUserId)" class="btn-primary px-4 py-2">
+                    <i data-lucide="edit" class="w-4 h-4 inline mr-2"></i>
+                    Edit User
+                </button>
+                <button onclick="showView('all-users')" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                    <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i>
+                    Back to Users
+                </button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- User Profile Card -->
+            <div class="content-card p-6">
+                <div class="text-center">
+                    <div id="userAvatar" class="w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-white font-bold text-2xl">JD</span>
+                    </div>
+                    <h3 id="userName" class="text-xl font-bold text-gray-800 mb-1">@Model.User.FullName</h3>
+                    <p id="userEmail" class="text-gray-600 mb-3">@Model.User.Email</p>
+                    <div id="userStatus" class="inline-flex items-center space-x-2 px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">
+                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                        <span>Active</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 pt-6 border-t border-gray-200">
+                    <h4 class="font-semibold text-gray-800 mb-3">Quick Stats</h4>
+                    <div class="space-y-2">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Tasks Assigned</span>
+                            <span class="font-semibold text-gray-800">45</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Tasks Completed</span>
+                            <span class="font-semibold text-gray-800">38</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Projects</span>
+                            <span class="font-semibold text-gray-800">7</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Completion Rate</span>
+                            <span class="font-semibold text-green-600">84%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Information -->
+            <div class="lg:col-span-2 space-y-6">
+                <!-- Personal Information -->
+                <div class="content-card p-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Personal Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Full Name</label>
+                            <p class="text-gray-800 font-medium">@Model.User.FullName</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Email Address</label>
+                            <p class="text-gray-800 font-medium">@Model.User.Email</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Phone Number</label>
+                            <p class="text-gray-800 font-medium">+1 (555) 123-4567</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Employee ID</label>
+                            <p class="text-gray-800 font-medium">EMP-001</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Work Information -->
+                <div class="content-card p-6">
+                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Work Information</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Role</label>
+                            <p class="text-gray-800 font-medium">
+                                <span class="px-3 py-1 bg-red-600 text-white rounded-full text-sm">@Model.User.Role</span>
+                            </p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Department</label>
+                            <p class="text-gray-800 font-medium">Development</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Join Date</label>
+                            <p class="text-gray-800 font-medium">January 15, 2023</p>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-600 mb-1">Last Active</label>
+                            <p class="text-gray-800 font-medium">2 minutes ago</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+       </div>
+        </div>
+    </div>
+</div>

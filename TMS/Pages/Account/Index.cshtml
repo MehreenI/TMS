@@ -1,0 +1,510 @@
+﻿@page
+@model TMS.Pages.Account.IndexModel
+<div id="profile-settings" class="content-view">
+    <div class="slide-in">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold text-gray-800 mb-2">Profile Settings</h2>
+            <p class="text-gray-600">Manage your personal information and account preferences</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Settings Navigation -->
+            <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Settings</h3>
+                <nav class="space-y-2">
+                    <button onclick="showProfileSection('personal-info')" class="profile-nav-item active w-full flex items-center space-x-3 px-4 py-3 rounded-lg bg-red-50 text-red-600 transition-colors border border-red-200">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                        <span>Personal Info</span>
+                    </button>
+                    <button onclick="showProfileSection('account-settings')" class="profile-nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                        <span>Account Settings</span>
+                    </button>
+                    <button onclick="showProfileSection('notifications-settings')" class="profile-nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span>Notifications</span>
+                    </button>
+                    <button onclick="showProfileSection('preferences')" class="profile-nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
+                        <i data-lucide="sliders" class="w-5 h-5"></i>
+                        <span>Preferences</span>
+                    </button>
+                    <button onclick="showProfileSection('privacy')" class="profile-nav-item w-full flex items-center space-x-3 px-4 py-3 rounded-lg hover:bg-gray-50 transition-colors text-gray-700">
+                        <i data-lucide="shield" class="w-5 h-5"></i>
+                        <span>Privacy</span>
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Settings Content -->
+            <div class="lg:col-span-3 space-y-8">
+                <!-- Personal Information -->
+                <div id="personal-info" class="profile-section">
+                    <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                        <div class="flex items-center justify-between mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800">Personal Information</h3>
+                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium">Verified</span>
+                        </div>
+
+                        <!-- Profile Photo Section -->
+                        <div class="flex items-center space-x-6 mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200">
+                            <div class="w-24 h-24 bg-gradient-to-r from-red-500 to-red-600 rounded-full flex items-center justify-center">
+                                <span class="text-white font-bold text-3xl">JD</span>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="text-gray-800 font-semibold mb-2">Profile Photo</h4>
+                                <p class="text-gray-600 text-sm mb-4">Upload a professional photo for your profile</p>
+                                <div class="flex items-center space-x-3">
+                                    <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                                        <i data-lucide="upload" class="w-4 h-4 inline mr-2"></i>Upload New
+                                    </button>
+                                    <button class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors text-sm">
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <form class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">First Name *</label>
+                                    <input type="text" value="John" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Last Name *</label>
+                                    <input type="text" value="Doe" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Email Address *</label>
+                                <input type="email" value="john.doe@taskflow.com" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Phone Number</label>
+                                    <input type="tel" value="+1 (555) 123-4567" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Date of Birth</label>
+                                    <input type="date" value="1985-06-15" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Job Title</label>
+                                    <input type="text" value="System Administrator" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                </div>
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Department</label>
+                                    <select class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                        <option value="it" selected>Information Technology</option>
+                                        <option value="engineering">Engineering</option>
+                                        <option value="design">Design</option>
+                                        <option value="marketing">Marketing</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-gray-700 text-sm font-medium mb-2">Bio</label>
+                                <textarea class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200 h-24" placeholder="Tell us about yourself...">Experienced system administrator with 8+ years in enterprise IT management. Passionate about automation and security.</textarea>
+                            </div>
+
+                            <div class="flex items-center justify-end space-x-4">
+                                <button type="button" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+                                    Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Account Settings -->
+                <div id="account-settings" class="profile-section hidden">
+                    <div class="space-y-6">
+                        <!-- Password Change -->
+                        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">Change Password</h3>
+                            <form class="space-y-6">
+                                <div>
+                                    <label class="block text-gray-700 text-sm font-medium mb-2">Current Password</label>
+                                    <input type="password" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2">New Password</label>
+                                        <input type="password" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2">Confirm New Password</label>
+                                        <input type="password" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                    </div>
+                                </div>
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-lg font-medium transition-colors">
+                                    Update Password
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Two-Factor Authentication -->
+                        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-semibold text-gray-800">Two-Factor Authentication</h3>
+                                <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-medium">Disabled</span>
+                            </div>
+                            <p class="text-gray-600 mb-6">Add an extra layer of security to your account</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <i data-lucide="smartphone" class="w-5 h-5 text-red-600"></i>
+                                        <h4 class="text-gray-800 font-medium">Authenticator App</h4>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-4">Use Google Authenticator or similar apps</p>
+                                    <button class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-medium w-full transition-colors">
+                                        Setup Authenticator
+                                    </button>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="flex items-center space-x-3 mb-3">
+                                        <i data-lucide="mail" class="w-5 h-5 text-green-600"></i>
+                                        <h4 class="text-gray-800 font-medium">Email Verification</h4>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-4">Receive codes via email</p>
+                                    <button class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors text-sm w-full">
+                                        Enable Email 2FA
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Session Management -->
+                        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">Active Sessions</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="p-2 bg-green-100 rounded-lg">
+                                            <i data-lucide="monitor" class="w-5 h-5 text-green-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-800 font-medium">Windows - Chrome</p>
+                                            <p class="text-gray-600 text-sm">192.168.1.100 • New York, US • Current session</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-green-600 text-sm font-medium">Active</span>
+                                </div>
+
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="flex items-center space-x-4">
+                                        <div class="p-2 bg-blue-100 rounded-lg">
+                                            <i data-lucide="smartphone" class="w-5 h-5 text-blue-600"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-800 font-medium">iPhone - Safari</p>
+                                            <p class="text-gray-600 text-sm">192.168.1.105 • New York, US • 2 hours ago</p>
+                                        </div>
+                                    </div>
+                                    <button class="text-red-600 hover:text-red-700 text-sm font-medium">Revoke</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences -->
+                <div id="preferences" class="profile-section hidden">
+                    <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">Application Preferences</h3>
+                        <div class="space-y-8">
+                            <!-- Theme Settings -->
+                            <div>
+                                <h4 class="text-gray-800 font-medium mb-4">Theme & Appearance</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                    <div class="p-4 bg-gray-50 rounded-lg border-2 border-red-500">
+                                        <div class="flex items-center space-x-3 mb-3">
+                                            <input type="radio" name="theme" value="light" checked class="text-red-600">
+                                            <span class="text-gray-800 font-medium">Light Theme</span>
+                                        </div>
+                                        <div class="w-full h-16 bg-gradient-to-r from-white to-gray-100 rounded border"></div>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 rounded-lg border-2 border-transparent hover:border-gray-300">
+                                        <div class="flex items-center space-x-3 mb-3">
+                                            <input type="radio" name="theme" value="dark" class="text-red-600">
+                                            <span class="text-gray-800 font-medium">Dark Theme</span>
+                                        </div>
+                                        <div class="w-full h-16 bg-gradient-to-r from-gray-900 to-gray-800 rounded border"></div>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 rounded-lg border-2 border-transparent hover:border-gray-300">
+                                        <div class="flex items-center space-x-3 mb-3">
+                                            <input type="radio" name="theme" value="auto" class="text-red-600">
+                                            <span class="text-gray-800 font-medium">Auto</span>
+                                        </div>
+                                        <div class="w-full h-16 bg-gradient-to-r from-gray-900 via-gray-400 to-white rounded border"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Language & Region -->
+                            <div>
+                                <h4 class="text-gray-800 font-medium mb-4">Language & Region</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2">Language</label>
+                                        <select class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                            <option value="en" selected>English (US)</option>
+                                            <option value="es">Español</option>
+                                            <option value="fr">Français</option>
+                                            <option value="de">Deutsch</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2">Timezone</label>
+                                        <select class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                            <option value="est" selected>Eastern Time (EST)</option>
+                                            <option value="pst">Pacific Time (PST)</option>
+                                            <option value="utc">UTC</option>
+                                            <option value="cet">Central European Time</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Dashboard Settings -->
+                            <div>
+                                <h4 class="text-gray-800 font-medium mb-4">Dashboard Preferences</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-gray-800">Show welcome message</p>
+                                            <p class="text-gray-600 text-sm">Display personalized greeting on dashboard</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-gray-800">Auto-refresh data</p>
+                                            <p class="text-gray-600 text-sm">Automatically update dashboard metrics</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-gray-800">Compact sidebar</p>
+                                            <p class="text-gray-600 text-sm">Use collapsed sidebar by default</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notification Settings -->
+                <div id="notifications-settings" class="profile-section hidden">
+                    <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">Notification Preferences</h3>
+                        <div class="space-y-8">
+                            <!-- Email Notifications -->
+                            <div>
+                                <h4 class="text-gray-800 font-medium mb-4">Email Notifications</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-gray-800">Task assignments</p>
+                                            <p class="text-gray-600 text-sm">When you're assigned a new task</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-gray-800">Deadline reminders</p>
+                                            <p class="text-gray-600 text-sm">Notifications about approaching deadlines</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-gray-800">Team updates</p>
+                                            <p class="text-gray-600 text-sm">Updates from your team members</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Push Notifications -->
+                            <div>
+                                <h4 class="text-gray-800 font-medium mb-4">Push Notifications</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-gray-800">Browser notifications</p>
+                                            <p class="text-gray-600 text-sm">Show desktop notifications</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer" checked>
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                        </label>
+                                    </div>
+
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <p class="text-gray-800">Sound alerts</p>
+                                            <p class="text-gray-600 text-sm">Play sound for notifications</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input type="checkbox" class="sr-only peer">
+                                            <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Notification Schedule -->
+                            <div>
+                                <h4 class="text-gray-800 font-medium mb-4">Quiet Hours</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2">Do Not Disturb From</label>
+                                        <input type="time" value="22:00" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                    </div>
+                                    <div>
+                                        <label class="block text-gray-700 text-sm font-medium mb-2">Do Not Disturb Until</label>
+                                        <input type="time" value="08:00" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Privacy Settings -->
+                <div id="privacy" class="profile-section hidden">
+                    <div class="space-y-6">
+                        <!-- Privacy Controls -->
+                        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">Privacy Controls</h3>
+                            <div class="space-y-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-gray-800">Profile visibility</p>
+                                        <p class="text-gray-600 text-sm">Who can see your profile information</p>
+                                    </div>
+                                    <select class="px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-200">
+                                        <option value="everyone" selected>Everyone</option>
+                                        <option value="team">Team members only</option>
+                                        <option value="private">Private</option>
+                                    </select>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-gray-800">Online status</p>
+                                        <p class="text-gray-600 text-sm">Show when you're online</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                    </label>
+                                </div>
+
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-gray-800">Activity tracking</p>
+                                        <p class="text-gray-600 text-sm">Allow system to track your activity for analytics</p>
+                                    </div>
+                                    <label class="relative inline-flex items-center cursor-pointer">
+                                        <input type="checkbox" class="sr-only peer" checked>
+                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-red-600"></div>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Data Management -->
+                        <div class="bg-white rounded-xl p-6 border border-gray-200 shadow-sm">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-6">Data Management</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="text-gray-800 font-medium">Export Data</h4>
+                                            <p class="text-gray-600 text-sm">Download all your personal data</p>
+                                        </div>
+                                        <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors text-sm">
+                                            Request Export
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 bg-red-50 rounded-lg border border-red-200">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <h4 class="text-gray-800 font-medium">Delete Account</h4>
+                                            <p class="text-gray-600 text-sm">Permanently delete your account and data</p>
+                                        </div>
+                                        <button class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors text-sm">
+                                            Delete Account
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showProfileSection(sectionId) {
+        // Hide all profile sections
+        document.querySelectorAll('.profile-section').forEach(section => {
+            section.classList.add('hidden');
+        });
+
+        // Remove active class from all profile nav items
+        document.querySelectorAll('.profile-nav-item').forEach(item => {
+            item.classList.remove('active', 'bg-red-50', 'text-red-600', 'border-red-200');
+            item.classList.add('text-gray-700');
+        });
+
+        // Show selected section
+        document.getElementById(sectionId).classList.remove('hidden');
+
+        // Add active class to clicked nav item
+        const clickedItem = event.target.closest('.profile-nav-item');
+        clickedItem.classList.add('active', 'bg-red-50', 'text-red-600', 'border-red-200');
+        clickedItem.classList.remove('text-gray-700');
+    }
+</script>

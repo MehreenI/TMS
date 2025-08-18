@@ -1,0 +1,186 @@
+@page
+@model TMS.Pages.User.IndexModel
+<div id="all-users-view" class="content-view">
+    <div class="slide-in">
+        <div class="flex justify-between items-center mb-8">
+            <div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">User Management</h2>
+                <p class="text-gray-600">Manage system users, roles, and permissions</p>
+            </div>
+            <div class="flex space-x-3">
+                <button type="button" onclick="exportUser()" class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-colors border border-gray-300">
+                    <i data-lucide="download" class="w-4 h-4 inline mr-2"></i>Export
+                </button>
+                <a asp-page="./Create" class="btn-primary px-6 py-3 rounded-lg font-medium">
+                    <i data-lucide="user-plus" class="w-5 h-5 inline mr-2"></i>Create User
+                </a>
+            </div>
+        </div>
+
+        <!-- Filters and Search -->
+        <div class="content-card p-6 mb-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="relative">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"></i>
+                    <input type="text" placeholder="Search users..." class="w-full pl-12 pr-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-500">
+                </div>
+                <select class="px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                    <option value="">All Roles</option>
+                    <option value="admin">Admin</option>
+                    <option value="manager">Manager</option>
+                    <option value="user">User</option>
+                    <option value="developer">Developer</option>
+                    <option value="designer">Designer</option>
+                </select>
+                <select class="px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                    <option value="">All Status</option>
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                    <option value="suspended">Suspended</option>
+                </select>
+                <select class="px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                    <option value="">Registration Date</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- User Statistics -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="content-card p-6 hover:transform hover:translateY(-2px) transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Total Users</p>
+                        <p class="text-2xl font-bold text-gray-800">1,247</p>
+                    </div>
+                    <div class="p-3 bg-blue-600 rounded-lg">
+                        <i data-lucide="users" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card p-6 hover:transform hover:translateY(-2px) transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Active Users</p>
+                        <p class="text-2xl font-bold text-gray-800">1,098</p>
+                    </div>
+                    <div class="p-3 bg-green-600 rounded-lg">
+                        <i data-lucide="user-check" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card p-6 hover:transform hover:translateY(-2px) transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">New This Month</p>
+                        <p class="text-2xl font-bold text-gray-800">89</p>
+                    </div>
+                    <div class="p-3 bg-purple-600 rounded-lg">
+                        <i data-lucide="user-plus" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-card p-6 hover:transform hover:translateY(-2px) transition-all duration-300">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm">Admins</p>
+                        <p class="text-2xl font-bold text-gray-800">12</p>
+                    </div>
+                    <div class="p-3 bg-red-600 rounded-lg">
+                        <i data-lucide="shield" class="w-6 h-6 text-white"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="content-card overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-red-600">
+                        <tr>
+                            <th class="px-6 py-4 text-left text-white font-semibold">
+                                <input type="checkbox" class="rounded" />
+                            </th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">User</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Role</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Tasks</th>
+                            <th class="px-6 py-4 text-left text-white font-semibold">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        @if (Model.Users != null && Model.Users.Any())
+                        {
+                            @foreach (var user in Model.Users)
+                            {
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4">
+                                        #@(user.Id)
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-3">
+                                            @if (!string.IsNullOrEmpty(user.ProfileImagePath))
+                                            {
+                                                <img src="@user.ProfileImagePath" alt="@user.FullName" class="w-10 h-10 rounded-full object-cover" />
+                                            }
+                                            else
+                                            {
+                                                <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                                    <span class="text-white font-semibold text-sm">@(user.FullName?.Length > 0 ? user.FullName.Substring(0, 1) : "U")</span>
+                                                </div>
+                                            }
+                                            <div>
+                                                <p class="text-gray-800 font-medium">@user.FullName</p>
+                                                <p class="text-gray-600 text-sm">@user.Email</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        @{
+                                            var roleClass = user.Role?.ToLower() == "admin" ? "bg-red-600" :
+                                                          user.Role?.ToLower() == "manager" ? "bg-blue-600" : "bg-green-600";
+                                        }
+                                        <span class="px-3 py-1 @roleClass text-white rounded-full text-sm font-medium">@user.Role</span>
+                                    </td>
+                                    
+                                    <td class="px-6 py-4">
+                                        <div class="text-center">
+                                            <p class="text-gray-800 font-semibold">@(user.TaskCount)</p>
+                                            <p class="text-gray-600 text-xs">Assigned</p>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center space-x-2">
+                                            <a asp-page="./Edit" asp-route-id="@user.Id" class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Edit">
+                                                <i data-lucide="edit" class="w-4 h-4"></i>
+                                            </a>
+                                            <a asp-page="./View" asp-route-id="@user.Id" class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" title="View">
+                                                <i data-lucide="eye" class="w-4 h-4"></i>
+                                            </a>
+                                            <button onclick="deleteUser(@user.Id)" class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" title="Delete">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">No users found</td>
+                            </tr>
+                        }
+                                
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+    </div>
+</div>
