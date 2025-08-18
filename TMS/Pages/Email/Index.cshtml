@@ -1,0 +1,751 @@
+﻿@page
+@model TMS.Pages.Email.IndexModel
+<div id="email-templates-view" class="content-view">
+    <div class="slide-in">
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Email Templates</h1>
+            <p class="text-gray-600">Manage and customize email templates for different system notifications</p>
+        </div>
+
+        <!-- Email Template Tabs -->
+        <div class="content-card overflow-hidden">
+            <!-- Tab Headers -->
+            <div class="border-b border-gray-200">
+                <nav class="flex space-x-8 px-6 pt-6" aria-label="Email Templates">
+                    <button onclick="switchEmailTab('registration')" id="tab-registration" class="email-tab active whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                        <i data-lucide="user-plus" class="w-4 h-4 inline mr-2"></i>
+                        Registration Email
+                    </button>
+                    <button onclick="switchEmailTab('login')" id="tab-login" class="email-tab whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                        <i data-lucide="log-in" class="w-4 h-4 inline mr-2"></i>
+                        Login Email
+                    </button>
+                    <button onclick="switchEmailTab('project-assign')" id="tab-project-assign" class="email-tab whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                        <i data-lucide="folder-plus" class="w-4 h-4 inline mr-2"></i>
+                        Project Assign Email
+                    </button>
+                    <button onclick="switchEmailTab('forgot-password')" id="tab-forgot-password" class="email-tab whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm">
+                        <i data-lucide="key" class="w-4 h-4 inline mr-2"></i>
+                        Forgot Password Email
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- Registration Email Tab -->
+                <div id="email-content-registration" class="email-tab-content">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <!-- Email Editor -->
+                        <div class="lg:col-span-3 space-y-6">
+                            <!-- Subject Line -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subject Line</label>
+                                <input type="text"
+                                       id="registration-subject"
+                                       value="Welcome to Taskify - Your Account is Ready!"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+                                       placeholder="Enter email subject" />
+                            </div>
+
+                            <!-- Email Content Editor -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Content</label>
+                                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                                    <!-- Editor Toolbar -->
+                                    <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                        <div class="flex items-center space-x-4">
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Bold">
+                                                <i data-lucide="bold" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Italic">
+                                                <i data-lucide="italic" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Underline">
+                                                <i data-lucide="underline" class="w-4 h-4"></i>
+                                            </button>
+                                            <div class="h-4 w-px bg-gray-300"></div>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Link">
+                                                <i data-lucide="link" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Image">
+                                                <i data-lucide="image" class="w-4 h-4"></i>
+                                            </button>
+                                            <div class="h-4 w-px bg-gray-300"></div>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Bulleted List">
+                                                <i data-lucide="list" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Numbered List">
+                                                <i data-lucide="list-ordered" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <!-- Editor Content -->
+                                    <textarea id="registration-content"
+                                              rows="12"
+                                              class="w-full px-4 py-3 border-0 focus:outline-none resize-none"
+                                              placeholder="Enter your email content here...">Dear [username],
+
+Welcome to Taskify! We're excited to have you join our team.
+
+Your account has been successfully created with the following details:
+• Email: [email]
+• Login URL: [login_url]
+• Temporary Password: [temp_password]
+
+To get started:
+1. Click the login link above
+2. Use your email and temporary password to sign in
+3. You'll be prompted to create a new secure password
+4. Complete your profile setup
+
+If you have any questions or need assistance, please don't hesitate to contact our support team at [support_email].
+
+Best regards,
+The Taskify Team
+[company_name]</textarea>
+                                </div>
+                            </div>
+
+                            <!-- Email Actions -->
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="previewEmail('registration')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        <i data-lucide="eye" class="w-4 h-4 inline mr-2"></i>
+                                        Preview
+                                    </button>
+                                    <button type="button" onclick="testEmail('registration')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                        <i data-lucide="send" class="w-4 h-4 inline mr-2"></i>
+                                        Send Test
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="resetEmailTemplate('registration')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                        <i data-lucide="rotate-ccw" class="w-4 h-4 inline mr-2"></i>
+                                        Reset
+                                    </button>
+                                    <button type="button" onclick="saveEmailTemplate('registration')" class="btn-primary px-6 py-2">
+                                        <i data-lucide="save" class="w-4 h-4 inline mr-2"></i>
+                                        Save Template
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shortcodes Sidebar -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-gray-50 rounded-lg p-4 sticky top-4">
+                                <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                    <i data-lucide="code" class="w-4 h-4 mr-2"></i>
+                                    Available Shortcodes
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">User Information</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('registration-content', '[username]')" class="shortcode-btn">
+                                                <code>[username]</code>
+                                                <span>User's name</span>
+                                            </button>
+                                            <button onclick="insertShortcode('registration-content', '[email]')" class="shortcode-btn">
+                                                <code>[email]</code>
+                                                <span>User's email</span>
+                                            </button>
+                                            <button onclick="insertShortcode('registration-content', '[first_name]')" class="shortcode-btn">
+                                                <code>[first_name]</code>
+                                                <span>First name</span>
+                                            </button>
+                                            <button onclick="insertShortcode('registration-content', '[last_name]')" class="shortcode-btn">
+                                                <code>[last_name]</code>
+                                                <span>Last name</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Login Credentials</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('registration-content', '[temp_password]')" class="shortcode-btn">
+                                                <code>[temp_password]</code>
+                                                <span>Temporary password</span>
+                                            </button>
+                                            <button onclick="insertShortcode('registration-content', '[login_url]')" class="shortcode-btn">
+                                                <code>[login_url]</code>
+                                                <span>Login page URL</span>
+                                            </button>
+                                            <button onclick="insertShortcode('registration-content', '[activation_link]')" class="shortcode-btn">
+                                                <code>[activation_link]</code>
+                                                <span>Account activation</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Company Information</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('registration-content', '[company_name]')" class="shortcode-btn">
+                                                <code>[company_name]</code>
+                                                <span>Company name</span>
+                                            </button>
+                                            <button onclick="insertShortcode('registration-content', '[support_email]')" class="shortcode-btn">
+                                                <code>[support_email]</code>
+                                                <span>Support email</span>
+                                            </button>
+                                            <button onclick="insertShortcode('registration-content', '[website_url]')" class="shortcode-btn">
+                                                <code>[website_url]</code>
+                                                <span>Website URL</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Date & Time</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('registration-content', '[current_date]')" class="shortcode-btn">
+                                                <code>[current_date]</code>
+                                                <span>Current date</span>
+                                            </button>
+                                            <button onclick="insertShortcode('registration-content', '[current_time]')" class="shortcode-btn">
+                                                <code>[current_time]</code>
+                                                <span>Current time</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-6 p-3 bg-blue-50 rounded-lg">
+                                    <p class="text-xs text-blue-800">
+                                        <i data-lucide="info" class="w-3 h-3 inline mr-1"></i>
+                                        Click any shortcode to insert it at your cursor position in the editor.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Login Email Tab -->
+                <div id="email-content-login" class="email-tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <!-- Email Editor -->
+                        <div class="lg:col-span-3 space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subject Line</label>
+                                <input type="text"
+                                       id="login-subject"
+                                       value="Login Notification - Taskify Account Access"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Content</label>
+                                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                                    <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                        <div class="flex items-center space-x-4">
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Bold">
+                                                <i data-lucide="bold" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Italic">
+                                                <i data-lucide="italic" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Link">
+                                                <i data-lucide="link" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <textarea id="login-content"
+                                              rows="12"
+                                              class="w-full px-4 py-3 border-0 focus:outline-none resize-none">Hello [username],
+
+We noticed a login to your Taskify account.
+
+Login Details:
+• Time: [login_time]
+• Date: [login_date]
+• IP Address: [ip_address]
+• Device: [device_info]
+• Location: [location]
+
+If this was you, no action is needed. Your account remains secure.
+
+If you don't recognize this login, please:
+1. Change your password immediately: [change_password_url]
+2. Contact our security team: [security_email]
+3. Review your account activity
+
+Best regards,
+The Taskify Security Team</textarea>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="previewEmail('login')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        <i data-lucide="eye" class="w-4 h-4 inline mr-2"></i>
+                                        Preview
+                                    </button>
+                                    <button type="button" onclick="testEmail('login')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                        <i data-lucide="send" class="w-4 h-4 inline mr-2"></i>
+                                        Send Test
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="resetEmailTemplate('login')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                        <i data-lucide="rotate-ccw" class="w-4 h-4 inline mr-2"></i>
+                                        Reset
+                                    </button>
+                                    <button type="button" onclick="saveEmailTemplate('login')" class="btn-primary px-6 py-2">
+                                        <i data-lucide="save" class="w-4 h-4 inline mr-2"></i>
+                                        Save Template
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shortcodes Sidebar for Login -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-gray-50 rounded-lg p-4 sticky top-4">
+                                <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                    <i data-lucide="code" class="w-4 h-4 mr-2"></i>
+                                    Login Shortcodes
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">User Information</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('login-content', '[username]')" class="shortcode-btn">
+                                                <code>[username]</code>
+                                                <span>User's name</span>
+                                            </button>
+                                            <button onclick="insertShortcode('login-content', '[email]')" class="shortcode-btn">
+                                                <code>[email]</code>
+                                                <span>User's email</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Login Details</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('login-content', '[login_time]')" class="shortcode-btn">
+                                                <code>[login_time]</code>
+                                                <span>Login time</span>
+                                            </button>
+                                            <button onclick="insertShortcode('login-content', '[login_date]')" class="shortcode-btn">
+                                                <code>[login_date]</code>
+                                                <span>Login date</span>
+                                            </button>
+                                            <button onclick="insertShortcode('login-content', '[ip_address]')" class="shortcode-btn">
+                                                <code>[ip_address]</code>
+                                                <span>IP address</span>
+                                            </button>
+                                            <button onclick="insertShortcode('login-content', '[device_info]')" class="shortcode-btn">
+                                                <code>[device_info]</code>
+                                                <span>Device info</span>
+                                            </button>
+                                            <button onclick="insertShortcode('login-content', '[location]')" class="shortcode-btn">
+                                                <code>[location]</code>
+                                                <span>Login location</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Security Links</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('login-content', '[change_password_url]')" class="shortcode-btn">
+                                                <code>[change_password_url]</code>
+                                                <span>Password change</span>
+                                            </button>
+                                            <button onclick="insertShortcode('login-content', '[security_email]')" class="shortcode-btn">
+                                                <code>[security_email]</code>
+                                                <span>Security team email</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Project Assign Email Tab -->
+                <div id="email-content-project-assign" class="email-tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <!-- Email Editor -->
+                        <div class="lg:col-span-3 space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subject Line</label>
+                                <input type="text"
+                                       id="project-assign-subject"
+                                       value="New Project Assignment: [project_name]"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Content</label>
+                                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                                    <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                        <div class="flex items-center space-x-4">
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Bold">
+                                                <i data-lucide="bold" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Italic">
+                                                <i data-lucide="italic" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Link">
+                                                <i data-lucide="link" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <textarea id="project-assign-content"
+                                              rows="12"
+                                              class="w-full px-4 py-3 border-0 focus:outline-none resize-none">Hello [username],
+
+You have been assigned to a new project in Taskify!
+
+Project Details:
+• Project Name: [project_name]
+• Description: [project_description]
+• Priority: [project_priority]
+• Due Date: [project_due_date]
+• Project Manager: [project_manager]
+
+Your Role: [assigned_role]
+
+Tasks Assigned to You:
+[assigned_tasks]
+
+To get started:
+1. Access the project: [project_url]
+2. Review the project requirements
+3. Check your assigned tasks
+4. Contact [project_manager] if you have questions
+
+We're excited to have you on this project!
+
+Best regards,
+[assigner_name]
+Taskify Project Management</textarea>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="previewEmail('project-assign')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        <i data-lucide="eye" class="w-4 h-4 inline mr-2"></i>
+                                        Preview
+                                    </button>
+                                    <button type="button" onclick="testEmail('project-assign')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                        <i data-lucide="send" class="w-4 h-4 inline mr-2"></i>
+                                        Send Test
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="resetEmailTemplate('project-assign')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                        <i data-lucide="rotate-ccw" class="w-4 h-4 inline mr-2"></i>
+                                        Reset
+                                    </button>
+                                    <button type="button" onclick="saveEmailTemplate('project-assign')" class="btn-primary px-6 py-2">
+                                        <i data-lucide="save" class="w-4 h-4 inline mr-2"></i>
+                                        Save Template
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shortcodes Sidebar for Project Assignment -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-gray-50 rounded-lg p-4 sticky top-4">
+                                <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                    <i data-lucide="code" class="w-4 h-4 mr-2"></i>
+                                    Project Shortcodes
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">User Information</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('project-assign-content', '[username]')" class="shortcode-btn">
+                                                <code>[username]</code>
+                                                <span>Assignee name</span>
+                                            </button>
+                                            <button onclick="insertShortcode('project-assign-content', '[email]')" class="shortcode-btn">
+                                                <code>[email]</code>
+                                                <span>Assignee email</span>
+                                            </button>
+                                            <button onclick="insertShortcode('project-assign-content', '[assigned_role]')" class="shortcode-btn">
+                                                <code>[assigned_role]</code>
+                                                <span>Role in project</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Project Details</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('project-assign-content', '[project_name]')" class="shortcode-btn">
+                                                <code>[project_name]</code>
+                                                <span>Project name</span>
+                                            </button>
+                                            <button onclick="insertShortcode('project-assign-content', '[project_description]')" class="shortcode-btn">
+                                                <code>[project_description]</code>
+                                                <span>Project description</span>
+                                            </button>
+                                            <button onclick="insertShortcode('project-assign-content', '[project_priority]')" class="shortcode-btn">
+                                                <code>[project_priority]</code>
+                                                <span>Priority level</span>
+                                            </button>
+                                            <button onclick="insertShortcode('project-assign-content', '[project_due_date]')" class="shortcode-btn">
+                                                <code>[project_due_date]</code>
+                                                <span>Due date</span>
+                                            </button>
+                                            <button onclick="insertShortcode('project-assign-content', '[project_url]')" class="shortcode-btn">
+                                                <code>[project_url]</code>
+                                                <span>Project link</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Team Information</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('project-assign-content', '[project_manager]')" class="shortcode-btn">
+                                                <code>[project_manager]</code>
+                                                <span>Project manager</span>
+                                            </button>
+                                            <button onclick="insertShortcode('project-assign-content', '[assigner_name]')" class="shortcode-btn">
+                                                <code>[assigner_name]</code>
+                                                <span>Who assigned</span>
+                                            </button>
+                                            <button onclick="insertShortcode('project-assign-content', '[assigned_tasks]')" class="shortcode-btn">
+                                                <code>[assigned_tasks]</code>
+                                                <span>Task list</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Forgot Password Email Tab -->
+                <div id="email-content-forgot-password" class="email-tab-content hidden">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                        <!-- Email Editor -->
+                        <div class="lg:col-span-3 space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Subject Line</label>
+                                <input type="text"
+                                       id="forgot-password-subject"
+                                       value="Reset Your Taskify Password"
+                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500" />
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Email Content</label>
+                                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                                    <div class="bg-gray-50 px-4 py-2 border-b border-gray-200">
+                                        <div class="flex items-center space-x-4">
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Bold">
+                                                <i data-lucide="bold" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Italic">
+                                                <i data-lucide="italic" class="w-4 h-4"></i>
+                                            </button>
+                                            <button type="button" class="p-1 text-gray-600 hover:text-gray-800" title="Link">
+                                                <i data-lucide="link" class="w-4 h-4"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <textarea id="forgot-password-content"
+                                              rows="12"
+                                              class="w-full px-4 py-3 border-0 focus:outline-none resize-none">Hello [username],
+
+We received a request to reset your Taskify account password.
+
+If you made this request, click the button below to reset your password:
+
+[reset_password_button]
+
+Or copy and paste this link into your browser:
+[reset_password_url]
+
+This password reset link will expire in [expiry_time] hours for security reasons.
+
+Password Reset Details:
+• Request Time: [request_time]
+• IP Address: [ip_address]
+• Device: [device_info]
+
+If you didn't request a password reset, please ignore this email. Your password will remain unchanged.
+
+For additional security:
+• Never share your password with anyone
+• Use a strong, unique password
+• Contact support if you notice suspicious activity: [support_email]
+
+Best regards,
+The Taskify Security Team</textarea>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-gray-200">
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="previewEmail('forgot-password')" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                                        <i data-lucide="eye" class="w-4 h-4 inline mr-2"></i>
+                                        Preview
+                                    </button>
+                                    <button type="button" onclick="testEmail('forgot-password')" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                                        <i data-lucide="send" class="w-4 h-4 inline mr-2"></i>
+                                        Send Test
+                                    </button>
+                                </div>
+                                <div class="flex items-center space-x-4">
+                                    <button type="button" onclick="resetEmailTemplate('forgot-password')" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors">
+                                        <i data-lucide="rotate-ccw" class="w-4 h-4 inline mr-2"></i>
+                                        Reset
+                                    </button>
+                                    <button type="button" onclick="saveEmailTemplate('forgot-password')" class="btn-primary px-6 py-2">
+                                        <i data-lucide="save" class="w-4 h-4 inline mr-2"></i>
+                                        Save Template
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Shortcodes Sidebar for Forgot Password -->
+                        <div class="lg:col-span-1">
+                            <div class="bg-gray-50 rounded-lg p-4 sticky top-4">
+                                <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                    <i data-lucide="code" class="w-4 h-4 mr-2"></i>
+                                    Password Reset Shortcodes
+                                </h4>
+                                <div class="space-y-3">
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">User Information</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('forgot-password-content', '[username]')" class="shortcode-btn">
+                                                <code>[username]</code>
+                                                <span>User's name</span>
+                                            </button>
+                                            <button onclick="insertShortcode('forgot-password-content', '[email]')" class="shortcode-btn">
+                                                <code>[email]</code>
+                                                <span>User's email</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Reset Links</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('forgot-password-content', '[reset_password_url]')" class="shortcode-btn">
+                                                <code>[reset_password_url]</code>
+                                                <span>Reset URL</span>
+                                            </button>
+                                            <button onclick="insertShortcode('forgot-password-content', '[reset_password_button]')" class="shortcode-btn">
+                                                <code>[reset_password_button]</code>
+                                                <span>Reset button</span>
+                                            </button>
+                                            <button onclick="insertShortcode('forgot-password-content', '[expiry_time]')" class="shortcode-btn">
+                                                <code>[expiry_time]</code>
+                                                <span>Link expiry hours</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Request Details</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('forgot-password-content', '[request_time]')" class="shortcode-btn">
+                                                <code>[request_time]</code>
+                                                <span>Request time</span>
+                                            </button>
+                                            <button onclick="insertShortcode('forgot-password-content', '[ip_address]')" class="shortcode-btn">
+                                                <code>[ip_address]</code>
+                                                <span>IP address</span>
+                                            </button>
+                                            <button onclick="insertShortcode('forgot-password-content', '[device_info]')" class="shortcode-btn">
+                                                <code>[device_info]</code>
+                                                <span>Device info</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="shortcode-group">
+                                        <h5 class="text-sm font-medium text-gray-700 mb-2">Support</h5>
+                                        <div class="space-y-1">
+                                            <button onclick="insertShortcode('forgot-password-content', '[support_email]')" class="shortcode-btn">
+                                                <code>[support_email]</code>
+                                                <span>Support email</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden form for posting template updates -->
+    <form id="emailTemplateForm" method="post" asp-page-handler="SaveTemplate" class="hidden">
+        <input type="hidden" name="templateId" id="templateId" />
+        <input type="hidden" name="subject" id="templateSubject" />
+        <input type="hidden" name="content" id="templateContent" />
+        @Html.AntiForgeryToken()
+    </form>
+</div>
+
+<script>
+    lucide.createIcons();
+
+    function saveEmailTemplate(tab) {
+        const subjectInput = document.getElementById(`${tab}-subject`);
+        const contentInput = document.getElementById(`${tab}-content`);
+        const form = document.getElementById('emailTemplateForm');
+        document.getElementById('templateId').value = tab;
+        document.getElementById('templateSubject').value = subjectInput ? subjectInput.value : '';
+        document.getElementById('templateContent').value = contentInput ? contentInput.value : '';
+        form.submit();
+    }
+
+    function previewEmail(tab) {
+        alert('Preview not implemented in web app. Save the template and use backend preview if available.');
+    }
+
+    function testEmail(tab) {
+        alert('Test email requires a backend endpoint. Add it to the API to enable this button.');
+    }
+
+    function resetEmailTemplate(tab) {
+        const defaults = {
+            'registration': { subject: 'Welcome to Taskify - Your Account is Ready!', contentId: 'registration-content' },
+            'login': { subject: 'Login Notification - Taskify Account Access', contentId: 'login-content' },
+            'project-assign': { subject: 'New Project Assignment: [project_name]', contentId: 'project-assign-content' },
+            'forgot-password': { subject: 'Reset Your Taskify Password', contentId: 'forgot-password-content' }
+        };
+        const config = defaults[tab];
+        if (!config) return;
+        const subjectEl = document.getElementById(`${tab}-subject`);
+        const contentEl = document.getElementById(config.contentId);
+        if (subjectEl) subjectEl.value = config.subject;
+        if (contentEl) contentEl.value = contentEl.defaultValue;
+    }
+
+    function switchEmailTab(tab) {
+        document.querySelectorAll('.email-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.email-tab-content').forEach(c => c.classList.add('hidden'));
+        const activeTab = document.getElementById(`tab-${tab}`);
+        const activeContent = document.getElementById(`email-content-${tab}`);
+        if (activeTab) activeTab.classList.add('active');
+        if (activeContent) activeContent.classList.remove('hidden');
+    }
+
+    function insertShortcode(textareaId, shortcode) {
+        const textarea = document.getElementById(textareaId);
+        if (!textarea) return;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const value = textarea.value;
+        textarea.value = value.substring(0, start) + shortcode + value.substring(end);
+        textarea.focus();
+        textarea.selectionStart = textarea.selectionEnd = start + shortcode.length;
+    }
+</script>
