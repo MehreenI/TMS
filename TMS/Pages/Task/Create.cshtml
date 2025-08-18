@@ -1,0 +1,282 @@
+﻿@page
+@model TMS.Pages.Task.CreateModel
+<div id="create-task-view" class="content-view">
+    <div class="slide-in">
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Create New Task</h2>
+                    <p class="text-gray-600">Create and assign tasks to team members with detailed instructions</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <button onclick="clearTaskForm()" class="px-4 py-2 bg-white hover:bg-gray-50 text-gray-700 rounded-lg transition-colors border border-gray-300">
+                        <i data-lucide="refresh-cw" class="w-4 h-4 inline mr-2"></i>Reset Form
+                    </button>
+                    <div class="relative">
+                        <button onclick="toggleTaskTemplatesDropdown()" class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors">
+                            <i data-lucide="template" class="w-4 h-4 inline mr-2"></i>Templates
+                            <i data-lucide="chevron-down" class="w-4 h-4 inline ml-2"></i>
+                        </button>
+                        <div id="task-templates-dropdown" class="absolute right-0 mt-2 w-64 content-card rounded-xl shadow-xl border border-gray-200 hidden z-10">
+                            <div class="p-4">
+                                <h4 class="text-gray-800 font-medium mb-3">Task Templates</h4>
+                                <div class="space-y-2">
+                                    <button onclick="applyTaskTemplate('bug-fix')" class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                        <div class="text-gray-800 font-medium">Bug Fix</div>
+                                        <div class="text-gray-600 text-sm">Critical bug resolution</div>
+                                    </button>
+                                    <button onclick="applyTaskTemplate('feature')" class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                        <div class="text-gray-800 font-medium">Feature Development</div>
+                                        <div class="text-gray-600 text-sm">New feature implementation</div>
+                                    </button>
+                                    <button onclick="applyTaskTemplate('research')" class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                        <div class="text-gray-800 font-medium">Research Task</div>
+                                        <div class="text-gray-600 text-sm">Technology research</div>
+                                    </button>
+                                    <button onclick="applyTaskTemplate('testing')" class="w-full text-left p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                                        <div class="text-gray-800 font-medium">Testing</div>
+                                        <div class="text-gray-600 text-sm">QA and testing suite</div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task Assignment Form -->
+        <div class="space-y-8">
+            <!-- Task Details -->
+            <div class="content-card p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="p-2 bg-blue-600 rounded-lg">
+                        <i data-lucide="clipboard-list" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Task Details</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Task Title *</label>
+                        <input type="text" id="task-title" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-500" placeholder="Enter a clear and descriptive task title" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Task Description *</label>
+                        <textarea id="task-description" rows="5" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-500" placeholder="Provide detailed instructions, requirements, and acceptance criteria" required></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Priority *</label>
+                            <select id="task-priority" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500" required>
+                                <option value="">Select priority...</option>
+                                <option value="low">🟢 Low Priority</option>
+                                <option value="medium">🟡 Medium Priority</option>
+                                <option value="high">🟠 High Priority</option>
+                                <option value="critical">🔴 Critical</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Category</label>
+                            <select id="task-category" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                                <option value="">Select category...</option>
+                                <option value="development">Development</option>
+                                <option value="design">Design</option>
+                                <option value="testing">Testing</option>
+                                <option value="bug-fix">Bug Fix</option>
+                                <option value="feature">Feature</option>
+                                <option value="research">Research</option>
+                                <option value="documentation">Documentation</option>
+                                <option value="maintenance">Maintenance</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Project</label>
+                            <select id="task-project" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                                <option value="">Select project...</option>
+                                <option value="ecommerce">E-commerce Platform</option>
+                                <option value="mobile-app">Mobile Banking App</option>
+                                <option value="brand-redesign">Brand Redesign</option>
+                                <option value="marketing-campaign">Marketing Campaign</option>
+                                <option value="infrastructure">Infrastructure Upgrade</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Due Date *</label>
+                            <input type="date" id="task-due-date" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Estimated Hours</label>
+                            <input type="number" id="task-hours" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-500" placeholder="0" min="0" step="0.5">
+                        </div>
+
+                        <div>
+                            <label class="block text-gray-700 text-sm font-medium mb-2">Story Points</label>
+                            <select id="task-story-points" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 focus:outline-none focus:border-red-500">
+                                <option value="">Select points...</option>
+                                <option value="1">1 - Very Easy</option>
+                                <option value="2">2 - Easy</option>
+                                <option value="3">3 - Medium</option>
+                                <option value="5">5 - Hard</option>
+                                <option value="8">8 - Very Hard</option>
+                                <option value="13">13 - Extremely Hard</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-gray-700 text-sm font-medium mb-2">Tags</label>
+                        <input type="text" id="task-tags" class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:border-red-500" placeholder="Enter tags separated by commas (e.g., frontend, urgent, api)">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assignee Selection -->
+            <div class="content-card p-6">
+                <div class="flex items-center space-x-3 mb-6">
+                    <div class="p-2 bg-green-600 rounded-lg">
+                        <i data-lucide="user-check" class="w-5 h-5 text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800">Assign To</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div class="p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border">
+                        <div class="flex items-center space-x-3">
+                            <input type="radio" name="assignee" value="sarah" id="assignee-sarah" class="text-red-600">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-blue-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-semibold text-sm">SJ</span>
+                                </div>
+                                <div>
+                                    <label for="assignee-sarah" class="text-gray-800 font-medium cursor-pointer">Sarah Johnson</label>
+                                    <p class="text-gray-600 text-sm">UI/UX Designer</p>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-green-600 text-xs">Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border">
+                        <div class="flex items-center space-x-3">
+                            <input type="radio" name="assignee" value="mike" id="assignee-mike" class="text-red-600">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-semibold text-sm">MC</span>
+                                </div>
+                                <div>
+                                    <label for="assignee-mike" class="text-gray-800 font-medium cursor-pointer">Mike Chen</label>
+                                    <p class="text-gray-600 text-sm">Backend Developer</p>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
+                                        <span class="text-yellow-600 text-xs">Busy (3 tasks)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border">
+                        <div class="flex items-center space-x-3">
+                            <input type="radio" name="assignee" value="alex" id="assignee-alex" class="text-red-600">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <div class="w-10 h-10 bg-gradient-to-r from-yellow-500 to-red-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-semibold text-sm">AR</span>
+                                </div>
+                                <div>
+                                    <label for="assignee-alex" class="text-gray-800 font-medium cursor-pointer">Alex Rivera</label>
+                                    <p class="text-gray-600 text-sm">Frontend Developer</p>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-green-600 text-xs">Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border">
+                        <div class="flex items-center space-x-3">
+                            <input type="radio" name="assignee" value="emily" id="assignee-emily" class="text-red-600">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <div class="w-10 h-10 bg-gradient-to-r from-indigo-500 to-cyan-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-semibold text-sm">EW</span>
+                                </div>
+                                <div>
+                                    <label for="assignee-emily" class="text-gray-800 font-medium cursor-pointer">Emily Wilson</label>
+                                    <p class="text-gray-600 text-sm">QA Engineer</p>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-green-600 text-xs">Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border opacity-60">
+                        <div class="flex items-center space-x-3">
+                            <input type="radio" name="assignee" value="david" id="assignee-david" class="text-red-600" disabled>
+                            <div class="flex items-center space-x-3 flex-1">
+                                <div class="w-10 h-10 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-semibold text-sm">DL</span>
+                                </div>
+                                <div>
+                                    <label for="assignee-david" class="text-gray-800 font-medium cursor-pointer">David Lee</label>
+                                    <p class="text-gray-600 text-sm">DevOps Engineer</p>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        <div class="w-2 h-2 bg-orange-500 rounded-full"></div>
+                                        <span class="text-orange-600 text-xs">On Leave</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-gray-50 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors border">
+                        <div class="flex items-center space-x-3">
+                            <input type="radio" name="assignee" value="lisa" id="assignee-lisa" class="text-red-600">
+                            <div class="flex items-center space-x-3 flex-1">
+                                <div class="w-10 h-10 bg-gradient-to-r from-orange-500 to-yellow-600 rounded-full flex items-center justify-center">
+                                    <span class="text-white font-semibold text-sm">LK</span>
+                                </div>
+                                <div>
+                                    <label for="assignee-lisa" class="text-gray-800 font-medium cursor-pointer">Lisa Kim</label>
+                                    <p class="text-gray-600 text-sm">Project Coordinator</p>
+                                    <div class="flex items-center space-x-1 mt-1">
+                                        <div class="w-2 h-2 bg-green-500 rounded-full"></div>
+                                        <span class="text-green-600 text-xs">Available</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex items-center justify-end space-x-4">
+                <button type="button" onclick="showView('all-tasks')" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">
+                    <i data-lucide="x" class="w-5 h-5 inline mr-2"></i>Cancel
+                </button>
+                <button type="button" onclick="saveTaskDraft()" class="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white rounded-lg transition-colors">
+                    <i data-lucide="save" class="w-5 h-5 inline mr-2"></i>Save as Draft
+                </button>
+                <button type="button" onclick="assignTask()" class="btn-primary px-6 py-3 rounded-lg font-medium">
+                    <i data-lucide="send" class="w-5 h-5 inline mr-2"></i>Create Task
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
