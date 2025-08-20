@@ -101,7 +101,6 @@ namespace TMS.Pages.User
                 ).ToList();
             }
 
-            // Registration period filter
             if (!string.IsNullOrWhiteSpace(RegistrationPeriod))
             {
                 DateTime filterDate = RegistrationPeriod.ToLower() switch
@@ -119,7 +118,6 @@ namespace TMS.Pages.User
             }
         }
 
-        // Method to clear all filters
         public IActionResult OnGetClearFilters()
         {
             return RedirectToPage("./Index");

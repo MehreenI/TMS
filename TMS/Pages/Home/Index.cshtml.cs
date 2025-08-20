@@ -37,25 +37,18 @@ namespace TMS.Pages.Home
                     return RedirectToPage("/Home/Login");
                 }
 
-                // Get current user from session
                 var userId = HttpContext.Session.GetString("UserId");
                 var fullName = HttpContext.Session.GetString("FullName");
                 var email = HttpContext.Session.GetString("Email");
 
                 if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(fullName))
-                {
-                    return RedirectToPage("/Home/Login");
-                }
 
                 CurrentUser = new UserDtos
                 {
                     Id = int.Parse(userId),
                     Email = email ?? "",
-                    Role = "User"
                 };
 
-                // Check if user is admin (simple check)
-                IsAdmin = fullName.Contains("Admin", StringComparison.OrdinalIgnoreCase);
 
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 

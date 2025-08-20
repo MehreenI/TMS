@@ -47,7 +47,6 @@ namespace TMS.Pages.Task
 
                 TaskId = id;
 
-                // Load task details
                 var taskEndpoint = $"{_apiUrl}/api/TaskItems/{id}";
                 var taskResponse = await _httpClient.GetAsync(taskEndpoint);
 

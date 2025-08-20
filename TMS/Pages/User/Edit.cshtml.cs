@@ -27,7 +27,6 @@ namespace TMS.Pages.User
 
         }
 
-        // GET: Load user data for editing
         public async System.Threading.Tasks.Task<IActionResult> OnGetAsync(int id)
         {
           
@@ -51,7 +50,6 @@ namespace TMS.Pages.User
                     Console.WriteLine($"  {header.Key}: {string.Join(", ", header.Value)}");
                 }
 
-                // Debug: Print response content
                 var responseContent = await response.Content.ReadAsStringAsync();
 
 

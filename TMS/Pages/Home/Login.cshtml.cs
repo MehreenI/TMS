@@ -50,14 +50,12 @@ namespace TMS.Pages.Home
                     return Page();
                 }
 
-                // Create login request
                 var loginRequest = new LoginRequest
                 {
                     Email = Input.Email.Trim(),
                     Password = Input.Password
                 };
 
-                // Call API directly
                 var apiEndpoint = $"{_apiUrl}/api/Auth/login";
                 var json = JsonSerializer.Serialize(loginRequest);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -74,7 +72,6 @@ namespace TMS.Pages.Home
 
                     if (authResponse != null && !string.IsNullOrWhiteSpace(authResponse.Token))
                     {
-                        // Store authentication data in session
                         HttpContext.Session.SetString("JWTToken", authResponse.Token);
                         HttpContext.Session.SetString("UserId", authResponse.UserId.ToString());
                         HttpContext.Session.SetString("FullName", authResponse.FullName ?? "");

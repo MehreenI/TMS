@@ -42,7 +42,6 @@ namespace TMS.Pages.User
                 var apiEndpoint = $"{ApiUrl}/api/Users/{id}";
                 var response = await httpClient.GetAsync(apiEndpoint);
 
-                // Debug: Print response content
                 var responseContent = await response.Content.ReadAsStringAsync();
                
 
