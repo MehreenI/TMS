@@ -24,7 +24,6 @@ namespace TMS.Middleware
                 var publicRoutes = new[]
                 {
                     "/home/login",
-                    "/home/index",
                     "/error",
                     "/css/",
                     "/js/",
@@ -50,13 +49,13 @@ namespace TMS.Middleware
                     var adminRoutes = new[]
                     {
                         "/user/",
+                        "/user/create",
+                        "/user/edit",
+                        "/user/delete",
                         "/task/create",
                         "/task/edit",
                         "/task/delete",
-                        "/dashboard/analytics",
-                        "/dashboard/report",
-                        "/announcement/",
-                        "/email/"
+                        
                     };
 
                     bool isAdminRoute = adminRoutes.Any(route => 
@@ -65,12 +64,13 @@ namespace TMS.Middleware
                     if (isAdminRoute)
                     {
                         var userRole = context.Session.GetString(AppConstants.SessionKeys.UserRole);
-                        var isAdmin = !string.IsNullOrWhiteSpace(userRole) && userRole.Equals(AppConstants.Roles.Admin, StringComparison.OrdinalIgnoreCase);
+                        var isAdmin = (userRole == "Admin");
                         
                         if (!isAdmin)
                         {
                             _logger.LogWarning($"Non-admin user attempted to access admin route: {path}");
                             context.Response.Redirect(AppConstants.Routes.Error);
+
                             return;
                         }
                     }

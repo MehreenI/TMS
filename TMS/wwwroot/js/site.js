@@ -98,3 +98,13 @@ $(document).on('keydown', function (e) {
         }
     }
 });
+
+setTimeout(function () {
+    const messages = document.querySelectorAll('.fixed.top-4.right-4');
+    messages.forEach(function (message) {
+        message.style.opacity = '0';
+        setTimeout(function () {
+            message.remove();
+        }, 300);
+    });
+}, 3000);
