@@ -5,7 +5,7 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-3xl font-bold text-gray-800">Task Details</h1>
             <div class="flex space-x-3">
-                <a asp-page="./Edit" class="btn-primary px-4 py-2">
+                <a asp-page="./Edit" asp-route-id="@Model.Task.Id" class="btn-primary px-4 py-2">
                     <i data-lucide="edit" class="w-4 h-4 inline mr-2"></i>
                     Edit Task
                 </a>
