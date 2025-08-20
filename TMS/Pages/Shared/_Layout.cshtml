@@ -5,6 +5,7 @@
     var userRole = Context.Session.GetString("UserRole");
 
     var isAdmin = (userRole == "Admin");
+    TempData["isAdmin"] = isAdmin;
 }
 
 <!DOCTYPE html>
