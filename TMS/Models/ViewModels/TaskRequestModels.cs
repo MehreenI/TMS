@@ -1,26 +1,41 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace TMS.Models.ViewModels
 {
     public class CreateTaskRequest
     {
-        public required string Title { get; set; }
+        [Required(ErrorMessage = "Task title is required")]
+        [StringLength(100, ErrorMessage = "Title cannot exceed 100 characters")]
+        public string Title { get; set; } = string.Empty;
+        
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
         public string? Description { get; set; }
+        
+        [Required(ErrorMessage = "Deadline is required")]
         public DateTime? Deadline { get; set; }
+        
+        [Required(ErrorMessage = "Priority is required")]
         public string Priority { get; set; } = "Medium";
+        
         public int? AssignedUserId { get; set; }
     }
 
     public class UpdateTaskRequest
     {
-        public required string Title { get; set; }
+        [Required(ErrorMessage = "Task title is required")]
+        [StringLength(100, ErrorMessage = "Title cannot exceed 100 characters")]
+        public string Title { get; set; } = string.Empty;
+        
+        [StringLength(500, ErrorMessage = "Description cannot exceed 500 characters")]
         public string? Description { get; set; }
+        
+        [Required(ErrorMessage = "Deadline is required")]
         public DateTime? Deadline { get; set; }
+        
+        [Required(ErrorMessage = "Priority is required")]
         public string Priority { get; set; } = "Medium";
-        public int? AssignedUserId { get; set; }
-    }
-
-    public class UpdateTaskStatusRequest
-    {
-        public required string Status { get; set; }
+        
+        public int? assignedUserId { get; set; }
     }
 
     public class DashboardStats

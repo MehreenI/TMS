@@ -15,10 +15,10 @@ namespace TMS.Models
         public DateTime? Deadline { get; set; }
         
         [Required]
-        public string Priority { get; set; } = "Medium"; // Low, Medium, High
+        public string Priority { get; set; } = "Medium";
         
         [Required]
-        public string Status { get; set; } = "ToDo"; // ToDo, InProgress, Done
+        public string Status { get; set; } = "ToDo";
         
         public int? AssignedUserId { get; set; }
         

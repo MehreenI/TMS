@@ -1,157 +1,159 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TMS.Models.ViewModels;
-using TMS.Services;
+using System.Text.Json;
+using System.Web;
 
 namespace TMS.Pages.Task
 {
     public class IndexModel : PageModel
     {
-        private readonly IAuthService _authService;
-        private readonly IApiService _apiService;
-        private readonly ILogger<IndexModel> _logger;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly string _apiUrl;
 
-        public IndexModel(IAuthService authService, IApiService apiService, ILogger<IndexModel> logger)
+        public List<TaskDtos> Tasks { get; set; } = new();
+        public List<UserDtos> Users { get; set; } = new();
+
+        [BindProperty(SupportsGet = true)]
+        public string? SearchTerm { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? Priority { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? Status { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? AssignedUserId { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public DateTime? Deadline { get; set; }
+
+        public IndexModel(HttpClient httpClient, IConfiguration configuration)
         {
-            _authService = authService;
-            _apiService = apiService;
-            _logger = logger;
+            _httpClient = httpClient;
+            _configuration = configuration;
+            _apiUrl = configuration["ApiUrl"] ?? "http://localhost:5019";
         }
 
-        public List<TaskDtos>? Tasks { get; set; }
-        public UserDtos? CurrentUser { get; set; }
-        public bool IsAdmin { get; set; }
-        public string? SearchTerm { get; set; }
-        public string? StatusFilter { get; set; }
-        public string? PriorityFilter { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(string? search, string? status, string? priority)
+        public async System.Threading.Tasks.Task<IActionResult> OnGetAsync()
         {
             try
             {
-                // Get current user
-                CurrentUser = await _authService.GetCurrentUserAsync();
-                if (CurrentUser == null)
+                var token = HttpContext.Session.GetString("JWTToken");
+                if (string.IsNullOrWhiteSpace(token))
                 {
                     return RedirectToPage("/Home/Login");
                 }
 
-                // Check if user is admin
-                IsAdmin = await _authService.IsAdminAsync();
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                // Set filters
-                SearchTerm = search;
-                StatusFilter = status;
-                PriorityFilter = priority;
+                await LoadUsersAsync();
 
-                // Get tasks based on user role
-                if (IsAdmin)
-                {
-                    Tasks = await _apiService.GetTasksAsync();
-                }
-                else
-                {
-                    Tasks = await _apiService.GetMyTasksAsync();
-                }
+                var apiEndpoint = BuildApiEndpoint();
 
-                // Apply filters
-                if (Tasks != null)
+                var response = await _httpClient.GetAsync(apiEndpoint);
+                if (response.IsSuccessStatusCode)
                 {
-                    Tasks = ApplyFilters(Tasks, search, status, priority);
+                    var content = await response.Content.ReadAsStringAsync();
+                    var tasks = JsonSerializer.Deserialize<List<TaskDtos>>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    if (tasks != null)
+                    {
+                        Tasks = tasks;
+
+                        if (!string.IsNullOrWhiteSpace(SearchTerm))
+                        {
+                            Tasks = Tasks.Where(t =>
+                                (t.Title?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                                (t.Description?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                            ).ToList();
+                        }
+                    }
                 }
 
                 return Page();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error loading tasks");
-                return RedirectToPage("/Error");
+                TempData["ErrorMessage"] = "Failed to load tasks.";
+                return Page();
             }
         }
 
-        private List<TaskDtos> ApplyFilters(List<TaskDtos> tasks, string? search, string? status, string? priority)
-        {
-            var filteredTasks = tasks.AsEnumerable();
-
-            // Apply search filter
-            if (!string.IsNullOrEmpty(search))
-            {
-                filteredTasks = filteredTasks.Where(t => 
-                    t.Title.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                    t.Description?.Contains(search, StringComparison.OrdinalIgnoreCase) == true ||
-                    t.AssignedToUserName?.Contains(search, StringComparison.OrdinalIgnoreCase) == true);
-            }
-
-            // Apply status filter
-            if (!string.IsNullOrEmpty(status) && status != "All")
-            {
-                filteredTasks = filteredTasks.Where(t => t.Status.Equals(status, StringComparison.OrdinalIgnoreCase));
-            }
-
-            // Apply priority filter
-            if (!string.IsNullOrEmpty(priority) && priority != "All")
-            {
-                filteredTasks = filteredTasks.Where(t => t.Priority.Equals(priority, StringComparison.OrdinalIgnoreCase));
-            }
-
-            return filteredTasks.ToList();
-        }
-
-        public async Task<IActionResult> OnPostUpdateStatusAsync(int taskId, string status)
+        private async System.Threading.Tasks.Task LoadUsersAsync()
         {
             try
             {
-                var request = new UpdateTaskStatusRequest { Status = status };
-                var updatedTask = await _apiService.UpdateTaskStatusAsync(taskId, request);
-                
-                if (updatedTask != null)
+                var usersEndpoint = $"{_apiUrl}/api/Users";
+                var response = await _httpClient.GetAsync(usersEndpoint);
+                if (response.IsSuccessStatusCode)
                 {
-                    TempData["SuccessMessage"] = "Task status updated successfully.";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Failed to update task status.";
-                }
+                    var content = await response.Content.ReadAsStringAsync();
+                    var users = JsonSerializer.Deserialize<List<UserDtos>>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
 
-                return RedirectToPage();
+                    if (users != null)
+                    {
+                        Users = users;
+                    }
+                }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error updating task status");
-                TempData["ErrorMessage"] = "An error occurred while updating task status.";
-                return RedirectToPage();
+                Users = new List<UserDtos>();
             }
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(int taskId)
+        private string BuildApiEndpoint()
         {
-            try
-            {
-                if (!IsAdmin)
-                {
-                    TempData["ErrorMessage"] = "You don't have permission to delete tasks.";
-                    return RedirectToPage();
-                }
+            var baseEndpoint = $"{_apiUrl}/api/TaskItems";
+            var queryParams = new List<string>();
 
-                var success = await _apiService.DeleteTaskAsync(taskId);
-                
-                if (success)
-                {
-                    TempData["SuccessMessage"] = "Task deleted successfully.";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Failed to delete task.";
-                }
-
-                return RedirectToPage();
-            }
-            catch (Exception ex)
+            if (!string.IsNullOrWhiteSpace(Priority))
             {
-                _logger.LogError(ex, "Error deleting task");
-                TempData["ErrorMessage"] = "An error occurred while deleting the task.";
-                return RedirectToPage();
+                queryParams.Add($"priority={HttpUtility.UrlEncode(Priority)}");
             }
+
+            if (!string.IsNullOrWhiteSpace(Status))
+            {
+                queryParams.Add($"status={HttpUtility.UrlEncode(Status)}");
+            }
+
+            if (!string.IsNullOrWhiteSpace(AssignedUserId))
+            {
+                queryParams.Add($"assignedUserId={HttpUtility.UrlEncode(AssignedUserId)}");
+            }
+
+            if (Deadline.HasValue)
+            {
+                queryParams.Add($"deadline={Deadline.Value:yyyy-MM-dd}");
+            }
+
+            if (queryParams.Any())
+            {
+                return $"{baseEndpoint}?{string.Join("&", queryParams)}";
+            }
+
+            return baseEndpoint;
         }
+
+        public IActionResult OnGetClearFilters()
+        {
+            return RedirectToPage("./Index");
+        }
+
+        public int GetTotalTasks() => Tasks.Count;
+        public int GetInProgressTasks() => Tasks.Count(t => t.Status?.Equals("InProgress", StringComparison.OrdinalIgnoreCase) ?? false);
+        public int GetCompletedTasks() => Tasks.Count(t => t.Status?.Equals("Completed", StringComparison.OrdinalIgnoreCase) ?? false);
+        public int GetOverdueTasks() => Tasks.Count(t => t.Deadline.HasValue && t.Deadline.Value < DateTime.Now &&
+            !t.Status?.Equals("Completed", StringComparison.OrdinalIgnoreCase) == true);
     }
 }

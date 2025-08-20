@@ -1,8 +1,10 @@
-﻿@using TMS.Services
-@inject IAuthService AuthService
-@{
-    var currentUser = AuthService.GetCurrentUserAsync().Result;
-    var isAdmin = AuthService.IsAdminAsync().Result;
+﻿@{
+    var token = Context.Session.GetString("JWTToken");
+    var isAuthenticated = !string.IsNullOrWhiteSpace(token);
+    var fullName = Context.Session.GetString("FullName");
+    var userRole = Context.Session.GetString("UserRole");
+
+    var isAdmin = (userRole == "Admin");
 }
 
 <!DOCTYPE html>
@@ -71,25 +73,7 @@
                         </div>
                     </div>
 
-                    <div class="flex items-center space-x-4">
-                        <!-- Search -->
-                        <div class="relative hidden md:block">
-                            <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400"></i>
-                            <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 bg-white border border-gray-300 rounded-lg text-sm focus:outline-none focus:border-red-500 w-64">
-                        </div>
-
-                        <!-- Notifications -->
-                        <button class="relative p-2 hover:bg-red-50 rounded-lg transition-colors">
-                            <i data-lucide="bell" class="w-5 h-5 text-gray-600"></i>
-                            <div class="notification-dot"></div>
-                        </button>
-
-                        <!-- Messages -->
-                        <button class="relative p-2 hover:bg-red-50 rounded-lg transition-colors">
-                            <i data-lucide="mail" class="w-5 h-5 text-gray-600"></i>
-                            <div class="notification-dot"></div>
-                        </button>
-                    </div>
+                    
                 </div>
             </div>
         </header>
@@ -105,65 +89,68 @@
                         <div>
                             <h3 class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4 px-3">Dashboard</h3>
                             <div class="space-y-1">
-                                <a asp-area="" asp-page="/Home/Index" class="nav-item active flex items-center space-x-3 px-3 py-3 rounded-lg transition-all">
-                                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
-                                    <span class="nav-text font-medium">Overview</span>
-                                </a>
-                                <a asp-area="" asp-page="/Dashboard/Analytics" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
-                                    <i data-lucide="trending-up" class="w-5 h-5"></i>
-                                    <span class="nav-text">Analytics</span>
-                                </a>
-                                <a asp-area="" asp-page="/Dashboard/Report" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
-                                    <i data-lucide="file-bar-chart" class="w-5 h-5"></i>
-                                    <span class="nav-text">Reports</span>
-                                </a>
+                                @if (isAdmin)
+                                {
+                                    <a asp-area="" asp-page="/Home/Index" class="nav-item active flex items-center space-x-3 px-3 py-3 rounded-lg transition-all">
+                                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                                        <span class="nav-text font-medium">Overview</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-area="" asp-page="/Employee/Index" class="nav-item active flex items-center space-x-3 px-3 py-3 rounded-lg transition-all">
+                                        <i data-lucide="layout-dashboard" class="w-5 h-5"></i>
+                                        <span class="nav-text font-medium">Overview</span>
+                                    </a>
+                                }
                             </div>
                         </div>
 
                         <!-- User Management -->
-                        <div>
-                            <h3 class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4 px-3">User Management</h3>
-                            <div class="space-y-1">
-                                <a asp-area="" asp-page="/User/Index" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
-                                    <i data-lucide="users" class="w-5 h-5"></i>
-                                    <span class="nav-text">All Users</span>
-                                </a>
-                                <a asp-area="" asp-page="/User/Create" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
-                                    <i data-lucide="user-plus" class="w-5 h-5"></i>
-                                    <span class="nav-text">Create User</span>
-                                </a>
+                        @if (isAdmin)
+                        {
+                            <div>
+                                <h3 class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4 px-3">User Management</h3>
+                                <div class="space-y-1">
+
+                                    <a asp-area="" asp-page="/User/Index" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
+                                        <i data-lucide="users" class="w-5 h-5"></i>
+                                        <span class="nav-text">All Users</span>
+                                    </a>
+                                    <a asp-area="" asp-page="/User/Create" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
+                                        <i data-lucide="user-plus" class="w-5 h-5"></i>
+                                        <span class="nav-text">Create User</span>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
+                        }
 
                         <!-- Task & Project Management -->
                         <div>
                             <h3 class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4 px-3">Task & Projects</h3>
                             <div class="space-y-1">
-                                <a asp-area="" asp-page="/Task/Index" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
-                                    <i data-lucide="clipboard-list" class="w-5 h-5"></i>
-                                    <span class="nav-text">All Tasks</span>
-                                </a>
-                                <a asp-area="" asp-page="/Task/Create" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
-                                    <i data-lucide="plus" class="w-5 h-5"></i>
-                                    <span class="nav-text">Create and Assign Task</span>
-                                </a>
+                                @if (isAdmin)
+                                {
+                                    <a asp-area="" asp-page="/Task/Index" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
+                                        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                                        <span class="nav-text">All Tasks</span>
+                                    </a>
+
+                                    <a asp-area="" asp-page="/Task/Create" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
+                                        <i data-lucide="plus" class="w-5 h-5"></i>
+                                        <span class="nav-text">Create and Assign Task</span>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a asp-area="" asp-page="/Employee/MyTask" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
+                                        <i data-lucide="clipboard-list" class="w-5 h-5"></i>
+                                        <span class="nav-text">My Task</span>
+                                    </a>
+                                }
                             </div>
                         </div>
 
-                        <!-- Communication -->
-                        <div>
-                            <h3 class="text-xs uppercase tracking-wider text-gray-500 font-semibold mb-4 px-3">Communication</h3>
-                            <div class="space-y-1">
-                                <a asp-area="" asp-page="/Email/Index" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
-                                    <i data-lucide="mail" class="w-5 h-5"></i>
-                                    <span class="nav-text">Email Templates</span>
-                                </a>
-                                <a asp-area="" asp-page="/Announcement/Index" class="nav-item flex items-center space-x-3 px-3 py-3 rounded-lg hover:bg-red-50 transition-all text-gray-700">
-                                    <i data-lucide="megaphone" class="w-5 h-5"></i>
-                                    <span class="nav-text">Announcements</span>
-                                </a>
-                            </div>
-                        </div>
 
                         <!-- System -->
                         <div>

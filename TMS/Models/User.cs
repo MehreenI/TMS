@@ -30,13 +30,12 @@ namespace TMS.Models
         
         [Required]
         [StringLength(20)]
-        public string Role { get; set; } = "User"; // Admin, User
+        public string Role { get; set; } = "User";
         
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         
         public DateTime? LastLogin { get; set; }
         
-        // Navigation properties
         public virtual ICollection<TaskItem> AssignedTasks { get; set; } = new List<TaskItem>();
         public virtual ICollection<TaskItem> CreatedTasks { get; set; } = new List<TaskItem>();
         

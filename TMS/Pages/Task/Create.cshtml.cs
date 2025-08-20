@@ -1,66 +1,62 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using TMS.Models.ViewModels;
-using TMS.Services;
+using System.Text;
+using System.Text.Json;
+using TMS.Models;
 
 namespace TMS.Pages.Task
 {
     public class CreateModel : PageModel
     {
-        private readonly IAuthService _authService;
-        private readonly IApiService _apiService;
-        private readonly ILogger<CreateModel> _logger;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly string _apiUrl;
+        public List<UserDtos> Users { get; set; } = new();
 
-        public CreateModel(IAuthService authService, IApiService apiService, ILogger<CreateModel> logger)
-        {
-            _authService = authService;
-            _apiService = apiService;
-            _logger = logger;
-        }
 
         [BindProperty]
-        public CreateTaskRequest TaskRequest { get; set; } = new();
+        public CreateTaskRequest Task { get; set; } = new();
 
-        public List<UserDtos>? AvailableUsers { get; set; }
-        public List<SelectListItem> PriorityOptions { get; set; } = new();
-        public UserDtos? CurrentUser { get; set; }
+        public CreateModel(HttpClient httpClient, IConfiguration configuration)
+        {
+            _httpClient = httpClient;
+            _configuration = configuration;
+            _apiUrl = configuration["ApiUrl"] ?? "http://localhost:5019";
+        }
 
         public async Task<IActionResult> OnGetAsync()
         {
             try
             {
-                // Check if user is admin
-                var isAdmin = await _authService.IsAdminAsync();
-                if (!isAdmin)
-                {
-                    TempData["ErrorMessage"] = "You don't have permission to create tasks.";
-                    return RedirectToPage("/Task/Index");
-                }
-
-                // Get current user
-                CurrentUser = await _authService.GetCurrentUserAsync();
-                if (CurrentUser == null)
+                var token = HttpContext.Session.GetString("JWTToken");
+                if (string.IsNullOrWhiteSpace(token))
                 {
                     return RedirectToPage("/Home/Login");
                 }
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                // Get available users for assignment
-                AvailableUsers = await _apiService.GetUsersAsync();
+                var apiEndpoint = $"{_apiUrl}/api/Users";
+                var response = await _httpClient.GetAsync(apiEndpoint);
 
-                // Set up priority options
-                PriorityOptions = new List<SelectListItem>
+                if (response.IsSuccessStatusCode)
                 {
-                    new SelectListItem { Value = "Low", Text = "Low" },
-                    new SelectListItem { Value = "Medium", Text = "Medium", Selected = true },
-                    new SelectListItem { Value = "High", Text = "High" }
-                };
+                    var content = await response.Content.ReadAsStringAsync();
+                    var users = JsonSerializer.Deserialize<List<UserDtos>>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    if (users != null)
+                    {
+                        Users = users;
+                    }
+                }
 
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error loading create task page");
                 return RedirectToPage("/Error");
             }
         }
@@ -69,49 +65,79 @@ namespace TMS.Pages.Task
         {
             try
             {
-                // Check if user is admin
-                var isAdmin = await _authService.IsAdminAsync();
-                if (!isAdmin)
-                {
-                    TempData["ErrorMessage"] = "You don't have permission to create tasks.";
-                    return RedirectToPage("/Task/Index");
-                }
-
                 if (!ModelState.IsValid)
                 {
-                    // Reload the page with validation errors
-                    await OnGetAsync();
+                    await LoadUsers();
                     return Page();
                 }
 
-                // Get current user for CreatedByUserId
-                var currentUser = await _authService.GetCurrentUserAsync();
-                if (currentUser == null)
+                var token = HttpContext.Session.GetString("JWTToken");
+                if (string.IsNullOrWhiteSpace(token))
                 {
                     return RedirectToPage("/Home/Login");
                 }
 
-                // Create the task
-                var createdTask = await _apiService.CreateTaskAsync(TaskRequest);
-                
-                if (createdTask != null)
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+
+                var apiEndpoint = $"{_apiUrl}/api/TaskItems";
+                var json = JsonSerializer.Serialize(Task);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+             
+
+                var response = await _httpClient.PostAsync(apiEndpoint, content);
+
+               
+
+                if (response.IsSuccessStatusCode)
                 {
-                    TempData["SuccessMessage"] = "Task created successfully.";
+                    TempData["SuccessMessage"] = "Task created successfully!";
                     return RedirectToPage("/Task/Index");
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Failed to create task.";
-                    await OnGetAsync();
+                    var errorContent = await response.Content.ReadAsStringAsync();
+                   
+                    await LoadUsers();
                     return Page();
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error creating task");
-                TempData["ErrorMessage"] = "An error occurred while creating the task.";
-                await OnGetAsync();
+                await LoadUsers();
                 return Page();
+            }
+        }
+
+        private async System.Threading.Tasks.Task LoadUsers()
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("JWTToken");
+                if (!string.IsNullOrWhiteSpace(token))
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    var apiEndpoint = $"{_apiUrl}/api/Users";
+                    var response = await _httpClient.GetAsync(apiEndpoint);
+
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var content = await response.Content.ReadAsStringAsync();
+                        var users = JsonSerializer.Deserialize<List<UserDtos>>(content, new JsonSerializerOptions
+                        {
+                            PropertyNameCaseInsensitive = true
+                        });
+
+                        if (users != null)
+                        {
+                            Users = users;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error loading users: {ex.Message}");
             }
         }
     }

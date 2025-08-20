@@ -1,129 +1,134 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TMS.Models.ViewModels;
-using TMS.Services;
+using System.Text.Json;
+using System.Web;
 
 namespace TMS.Pages.User
 {
     public class IndexModel : PageModel
     {
-        private readonly IAuthService _authService;
-        private readonly IApiService _apiService;
-        private readonly ILogger<IndexModel> _logger;
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly string _apiUrl;
 
-        public IndexModel(IAuthService authService, IApiService apiService, ILogger<IndexModel> logger)
+        public List<UserDtos> Users { get; set; } = new();
+
+        [BindProperty(SupportsGet = true)]
+        public string? SearchTerm { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? Role { get; set; }
+
+        [BindProperty(SupportsGet = true)]
+        public string? RegistrationPeriod { get; set; }
+
+        public IndexModel(HttpClient httpClient, IConfiguration configuration)
         {
-            _authService = authService;
-            _apiService = apiService;
-            _logger = logger;
+            _httpClient = httpClient;
+            _configuration = configuration;
+            _apiUrl = configuration["ApiUrl"] ?? "http://localhost:5019";
         }
 
-        public List<UserDtos>? Users { get; set; }
-        public UserDtos? CurrentUser { get; set; }
-        public string? SearchTerm { get; set; }
-        public string? RoleFilter { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(string? search, string? role)
+        public async Task<IActionResult> OnGetAsync()
         {
             try
             {
-                // Check if user is admin
-                var isAdmin = await _authService.IsAdminAsync();
-                if (!isAdmin)
-                {
-                    TempData["ErrorMessage"] = "You don't have permission to access user management.";
-                    return RedirectToPage("/Home/Index");
-                }
-
-                // Get current user
-                CurrentUser = await _authService.GetCurrentUserAsync();
-                if (CurrentUser == null)
+                var token = HttpContext.Session.GetString("JWTToken");
+                if (string.IsNullOrWhiteSpace(token))
                 {
                     return RedirectToPage("/Home/Login");
                 }
 
-                // Set filters
-                SearchTerm = search;
-                RoleFilter = role;
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                // Get all users
-                Users = await _apiService.GetUsersAsync();
+                var apiEndpoint = BuildApiEndpoint();
 
-                // Apply filters
-                if (Users != null)
+                var response = await _httpClient.GetAsync(apiEndpoint);
+                if (response.IsSuccessStatusCode)
                 {
-                    Users = ApplyFilters(Users, search, role);
+                    var content = await response.Content.ReadAsStringAsync();
+                    var users = JsonSerializer.Deserialize<List<UserDtos>>(content, new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                    if (users != null)
+                    {
+                        Users = users;
+
+                        ApplyClientSideFilters();
+                    }
                 }
 
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error loading users");
-                return RedirectToPage("/Error");
+                TempData["ErrorMessage"] = "Failed to load users.";
+                return Page();
             }
         }
 
-        private List<UserDtos> ApplyFilters(List<UserDtos> users, string? search, string? role)
+        private string BuildApiEndpoint()
         {
-            var filteredUsers = users.AsEnumerable();
+            var baseEndpoint = $"{_apiUrl}/api/Users";
+            var queryParams = new List<string>();
 
-            // Apply search filter
-            if (!string.IsNullOrEmpty(search))
+            if (!string.IsNullOrWhiteSpace(Role))
             {
-                filteredUsers = filteredUsers.Where(u => 
-                    u.FullName.Contains(search, StringComparison.OrdinalIgnoreCase) ||
-                    u.Email.Contains(search, StringComparison.OrdinalIgnoreCase));
+                queryParams.Add($"role={HttpUtility.UrlEncode(Role)}");
             }
 
-            // Apply role filter
-            if (!string.IsNullOrEmpty(role) && role != "All")
+            if (queryParams.Any())
             {
-                filteredUsers = filteredUsers.Where(u => u.Role.Equals(role, StringComparison.OrdinalIgnoreCase));
+                return $"{baseEndpoint}?{string.Join("&", queryParams)}";
             }
 
-            return filteredUsers.ToList();
+            return baseEndpoint;
         }
 
-        public async Task<IActionResult> OnPostDeleteAsync(int userId)
+        private void ApplyClientSideFilters()
         {
-            try
+            // Search filter
+            if (!string.IsNullOrWhiteSpace(SearchTerm))
             {
-                // Check if user is admin
-                var isAdmin = await _authService.IsAdminAsync();
-                if (!isAdmin)
-                {
-                    TempData["ErrorMessage"] = "You don't have permission to delete users.";
-                    return RedirectToPage();
-                }
-
-                // Get current user to prevent self-deletion
-                var currentUser = await _authService.GetCurrentUserAsync();
-                if (currentUser?.Id == userId)
-                {
-                    TempData["ErrorMessage"] = "You cannot delete your own account.";
-                    return RedirectToPage();
-                }
-
-                var success = await _apiService.DeleteUserAsync(userId);
-                
-                if (success)
-                {
-                    TempData["SuccessMessage"] = "User deleted successfully.";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Failed to delete user.";
-                }
-
-                return RedirectToPage();
+                Users = Users.Where(u =>
+                    (u.FirstName?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (u.LastName?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false) ||
+                    (u.Email?.Contains(SearchTerm, StringComparison.OrdinalIgnoreCase) ?? false)
+                ).ToList();
             }
-            catch (Exception ex)
+
+            // Registration period filter
+            if (!string.IsNullOrWhiteSpace(RegistrationPeriod))
             {
-                _logger.LogError(ex, "Error deleting user");
-                TempData["ErrorMessage"] = "An error occurred while deleting the user.";
-                return RedirectToPage();
+                DateTime filterDate = RegistrationPeriod.ToLower() switch
+                {
+                    "today" => DateTime.Today,
+                    "week" => DateTime.Today.AddDays(-7),
+                    "month" => DateTime.Today.AddMonths(-1),
+                    _ => DateTime.MinValue
+                };
+
+                if (filterDate != DateTime.MinValue)
+                {
+                    Users = Users.Where(u => u.CreatedAt >= filterDate).ToList();
+                }
             }
         }
+
+        // Method to clear all filters
+        public IActionResult OnGetClearFilters()
+        {
+            return RedirectToPage("./Index");
+        }
+
+        // Statistics methods
+        public int GetTotalUsers() => Users.Count;
+        public int GetActiveUsers() => Users.Count(u => u.LastLogin.HasValue);
+        public int GetNewUsersThisMonth() => Users.Count(u => u.CreatedAt >= DateTime.Now.AddMonths(-1));
+        public int GetAdminUsers() => Users.Count(u => u.Role?.Equals("Admin", StringComparison.OrdinalIgnoreCase) ?? false);
     }
 }

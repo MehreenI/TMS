@@ -1,4 +1,94 @@
 @page
 @model TMS.Pages.Task.DeleteModel
-@{
-}
+<div id="delete-task-view" class="content-view">
+    <div class="slide-in">
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Delete Task</h2>
+                    <p class="text-gray-600">Confirm deletion of task</p>
+                </div>
+                <a asp-page="./Index" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                    <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i>
+                    Back to Tasks
+                </a>
+            </div>
+        </div>
+
+        <div class="content-card p-6">
+            <div class="text-center">
+                <div class="w-20 h-20 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i data-lucide="alert-triangle" class="w-10 h-10 text-red-600"></i>
+                </div>
+                
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Are you sure you want to delete this task?</h3>
+                
+                @if (Model.Task != null)
+                {
+                    <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                        <div class="text-left">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-2">@Model.Task.Title</h4>
+                            @if (!string.IsNullOrEmpty(Model.Task.Description))
+                            {
+                                <p class="text-gray-600 mb-3">@Model.Task.Description</p>
+                            }
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                                <div>
+                                    <span class="text-gray-500">Priority:</span>
+                                    <span class="ml-2 px-2 py-1 rounded text-xs font-medium
+                                        @(Model.Task.Priority == "High" ? "bg-red-100 text-red-800" : 
+                                          Model.Task.Priority == "Medium" ? "bg-yellow-100 text-yellow-800" : 
+                                          "bg-green-100 text-green-800")">
+                                        @Model.Task.Priority
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Status:</span>
+                                    <span class="ml-2 px-2 py-1 rounded text-xs font-medium
+                                        @(Model.Task.Status == "Completed" ? "bg-green-100 text-green-800" : 
+                                          Model.Task.Status == "In Progress" ? "bg-blue-100 text-blue-800" : 
+                                          "bg-gray-100 text-gray-800")">
+                                        @Model.Task.Status
+                                    </span>
+                                </div>
+                                @if (Model.Task.Deadline.HasValue)
+                                {
+                                    <div>
+                                        <span class="text-gray-500">Deadline:</span>
+                                        <span class="ml-2">@Model.Task.Deadline.Value.ToString("MMM dd, yyyy")</span>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+                    <div class="flex items-start space-x-3">
+                        <i data-lucide="alert-circle" class="w-5 h-5 text-red-600 mt-0.5"></i>
+                        <div class="text-left">
+                            <h4 class="font-medium text-red-800">Warning</h4>
+                            <p class="text-red-700 text-sm mt-1">
+                                This action cannot be undone. The task and all its associated data will be permanently deleted.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="post" class="space-y-4">
+                    <div asp-validation-summary="All" class="text-red-600 text-sm"></div>
+                    
+                    <div class="flex items-center justify-center space-x-4">
+                        <a asp-page="./Index" class="px-6 py-3 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg transition-colors">
+                            Cancel
+                        </a>
+                        <button type="submit" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-medium transition-colors">
+                            <i data-lucide="trash-2" class="w-4 h-4 inline mr-2"></i>
+                            Delete Task
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

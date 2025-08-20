@@ -5,14 +5,14 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-3xl font-bold text-gray-800">Task Details</h1>
             <div class="flex space-x-3">
-                <button onclick="editTask(currentTaskId)" class="btn-primary px-4 py-2">
+                <a asp-page="./Edit" class="btn-primary px-4 py-2">
                     <i data-lucide="edit" class="w-4 h-4 inline mr-2"></i>
                     Edit Task
-                </button>
-                <button onclick="showView('all-tasks')" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                </a>
+                <a asp-page="./Index" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                     <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i>
                     Back to Tasks
-                </button>
+                </a>
             </div>
         </div>
 
@@ -23,41 +23,26 @@
                     <div id="taskStatusIcon" class="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-600 rounded-full flex items-center justify-center mx-auto mb-4">
                         <i data-lucide="play-circle" class="w-8 h-8 text-white"></i>
                     </div>
-                    <h3 id="taskTitle" class="text-xl font-bold text-gray-800 mb-2">Database Optimization</h3>
+                    <h3 id="taskTitle" class="text-xl font-bold text-gray-800 mb-2">@Model.Task.Title</h3>
                     <div id="taskStatus" class="inline-flex items-center px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm font-medium">
-                        In Progress
+                        @Model.Task.Status
                     </div>
                 </div>
 
-                <div class="space-y-4">
-                    <div class="flex justify-between">
-                        <span class="text-gray-600">Progress</span>
-                        <span class="font-semibold text-gray-800">65%</span>
-                    </div>
-                    <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="bg-red-600 h-2 rounded-full" style="width: 65%"></div>
-                    </div>
-                </div>
+                
 
                 <div class="mt-6 pt-6 border-t border-gray-200">
                     <h4 class="font-semibold text-gray-800 mb-3">Quick Info</h4>
                     <div class="space-y-2">
                         <div class="flex justify-between">
                             <span class="text-gray-600">Priority</span>
-                            <span class="px-2 py-1 bg-red-600 text-white rounded text-sm">High</span>
+                            <span class="px-2 py-1 bg-red-600 text-white rounded text-sm">@Model.Task.Priority</span>
                         </div>
                         <div class="flex justify-between">
                             <span class="text-gray-600">Due Date</span>
-                            <span class="font-semibold text-gray-800">Aug 25, 2025</span>
+                            <span class="font-semibold text-gray-800">@Model.Task.Deadline?.ToString("MM/dd/yyyy")</span>
                         </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Estimated Hours</span>
-                            <span class="font-semibold text-gray-800">8h</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Story Points</span>
-                            <span class="font-semibold text-gray-800">5</span>
-                        </div>
+                        
                     </div>
                 </div>
             </div>
@@ -68,9 +53,7 @@
                 <div class="content-card p-6">
                     <h4 class="text-lg font-semibold text-gray-800 mb-4">Description</h4>
                     <p class="text-gray-700 leading-relaxed">
-                        Optimize database queries for better performance. This includes reviewing slow queries,
-                        adding appropriate indexes, and restructuring complex joins. The goal is to reduce
-                        page load times by at least 30% and improve overall system responsiveness.
+                      @Model.Task.Description
                     </p>
                 </div>
 
@@ -85,79 +68,21 @@
                                     <span class="text-white font-semibold text-sm">JD</span>
                                 </div>
                                 <div>
-                                    <p class="text-gray-800 font-medium">John Doe</p>
-                                    <p class="text-gray-600 text-sm">Backend Developer</p>
+                                    <p class="text-gray-800 font-medium">@Model.Task.AssignedUserName</p>
                                 </div>
                             </div>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-600 mb-1">Project</label>
-                            <p class="text-gray-800 font-medium">E-commerce Platform</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-600 mb-1">Category</label>
-                            <p class="text-gray-800 font-medium">Development</p>
+                            <p class="text-gray-800 font-medium">@Model.Task.Title</p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-600 mb-1">Created Date</label>
-                            <p class="text-gray-800 font-medium">August 15, 2025</p>
+                            <p class="text-gray-800 font-medium">@Model.Task.CreatedDate</p>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tags -->
-                <div class="content-card p-6">
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Tags</h4>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">database</span>
-                        <span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">performance</span>
-                        <span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm">optimization</span>
-                        <span class="px-3 py-1 bg-orange-100 text-orange-800 rounded-full text-sm">backend</span>
-                    </div>
-                </div>
-
-                <!-- Activity Timeline -->
-                <div class="content-card p-6">
-                    <h4 class="text-lg font-semibold text-gray-800 mb-4">Activity Timeline</h4>
-                    <div class="space-y-4">
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mt-0.5">
-                                <i data-lucide="play-circle" class="w-4 h-4 text-blue-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-800">Task started by John Doe</p>
-                                <p class="text-xs text-gray-600">2 hours ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mt-0.5">
-                                <i data-lucide="message-circle" class="w-4 h-4 text-green-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-800">Comment added: "Identified slow queries in user module"</p>
-                                <p class="text-xs text-gray-600">4 hours ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center mt-0.5">
-                                <i data-lucide="user-plus" class="w-4 h-4 text-purple-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-800">Task assigned to John Doe</p>
-                                <p class="text-xs text-gray-600">1 day ago</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start space-x-3">
-                            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center mt-0.5">
-                                <i data-lucide="plus" class="w-4 h-4 text-gray-600"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-800">Task created</p>
-                                <p class="text-xs text-gray-600">2 days ago</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>

@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Http.Extensions;
-using TMS.Services;
+using Microsoft.Extensions.Logging;
+using TMS.Constants;
 
 namespace TMS.Middleware
 {
@@ -10,77 +11,82 @@ namespace TMS.Middleware
 
         public AuthMiddleware(RequestDelegate next, ILogger<AuthMiddleware> logger)
         {
-            _next = next;
-            _logger = logger;
+            _next = next ?? throw new ArgumentNullException(nameof(next));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task InvokeAsync(HttpContext context, IAuthService authService)
+        public async Task InvokeAsync(HttpContext context)
         {
-            var path = context.Request.Path.Value?.ToLower();
-            
-            // Public routes that don't require authentication
-            var publicRoutes = new[]
+            try
             {
-                "/home/login",
-                "/home/index",
-                "/error",
-                "/css/",
-                "/js/",
-                "/lib/",
-                "/images/",
-                "/favicon.ico"
-            };
-
-            // Check if the current path is a public route
-            bool isPublicRoute = publicRoutes.Any(route => 
-                path?.StartsWith(route) == true || 
-                path?.Contains(route) == true);
-
-            if (!isPublicRoute)
-            {
-                // Check if user is authenticated
-                var isAuthenticated = await authService.IsAuthenticatedAsync();
+                var path = context.Request.Path.Value?.ToLower();
                 
-                if (!isAuthenticated)
+                var publicRoutes = new[]
                 {
-                    _logger.LogWarning("Unauthenticated access attempt to: {Path}", path);
-                    context.Response.Redirect("/Home/Login");
-                    return;
-                }
-
-                // Check for admin-only routes
-                var adminRoutes = new[]
-                {
-                    "/user/",
-                    "/task/create",
-                    "/task/edit",
-                    "/task/delete",
-                    "/dashboard/analytics",
-                    "/dashboard/report",
-                    "/announcement/",
-                    "/email/"
+                    "/home/login",
+                    "/home/index",
+                    "/error",
+                    "/css/",
+                    "/js/",
+                    "/lib/",
+                    "/images/",
+                    "/favicon.ico"
                 };
 
-                bool isAdminRoute = adminRoutes.Any(route => 
-                    path?.StartsWith(route) == true);
+                bool isPublicRoute = publicRoutes.Any(route => 
+                    path?.StartsWith(route) == true || 
+                    path?.Contains(route) == true);
 
-                if (isAdminRoute)
+                if (!isPublicRoute)
                 {
-                    var isAdmin = await authService.IsAdminAsync();
-                    if (!isAdmin)
+                    var token = context.Session.GetString(AppConstants.SessionKeys.JwtToken);
+                    if (string.IsNullOrWhiteSpace(token))
                     {
-                        _logger.LogWarning("Unauthorized admin access attempt to: {Path}", path);
-                        context.Response.Redirect("/Home/Index");
+                        _logger.LogInformation($"Unauthenticated access attempt to {path}");
+                        context.Response.Redirect(AppConstants.Routes.Login);
                         return;
                     }
-                }
-            }
 
-            await _next(context);
+                    var adminRoutes = new[]
+                    {
+                        "/user/",
+                        "/task/create",
+                        "/task/edit",
+                        "/task/delete",
+                        "/dashboard/analytics",
+                        "/dashboard/report",
+                        "/announcement/",
+                        "/email/"
+                    };
+
+                    bool isAdminRoute = adminRoutes.Any(route => 
+                        path?.StartsWith(route) == true);
+
+                    if (isAdminRoute)
+                    {
+                        var userRole = context.Session.GetString(AppConstants.SessionKeys.UserRole);
+                        var isAdmin = !string.IsNullOrWhiteSpace(userRole) && userRole.Equals(AppConstants.Roles.Admin, StringComparison.OrdinalIgnoreCase);
+                        
+                        if (!isAdmin)
+                        {
+                            _logger.LogWarning($"Non-admin user attempted to access admin route: {path}");
+                            context.Response.Redirect(AppConstants.Routes.Error);
+                            return;
+                        }
+                    }
+                }
+
+                await _next(context);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in AuthMiddleware");
+                context.Response.Redirect(AppConstants.Routes.Error);
+                return;
+            }
         }
     }
 
-    // Extension method for easy middleware registration
     public static class AuthMiddlewareExtensions
     {
         public static IApplicationBuilder UseAuthMiddleware(this IApplicationBuilder builder)

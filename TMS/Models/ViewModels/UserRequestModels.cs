@@ -2,26 +2,28 @@ namespace TMS.Models.ViewModels
 {
     public class CreateUserRequest
     {
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
-        public required string Email { get; set; }
+        public string FirstName { get; set; } = string.Empty;
+        public string LastName { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
         public string Role { get; set; } = "User";
     }
 
     public class UpdateUserRequest
     {
-        public required string FirstName { get; set; }
-        public required string LastName { get; set; }
-        public required string Email { get; set; }
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
         public string? PhoneNumber { get; set; }
-        public string Role { get; set; } = "User";
+        public string Role { get; set; }
+        public string? Password { get; set; }
     }
 
     public class ChangePasswordRequest
     {
-        public required string CurrentPassword { get; set; }
-        public required string NewPassword { get; set; }
-        public required string ConfirmPassword { get; set; }
+        public string CurrentPassword { get; set; } = string.Empty;
+        public string NewPassword { get; set; } = string.Empty;
+        public string ConfirmPassword { get; set; } = string.Empty;
     }
 }

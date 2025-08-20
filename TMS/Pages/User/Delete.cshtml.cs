@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TMS.Models.ViewModels;
 using System.Text.Json;
 
-namespace TMS.Pages.Task
+namespace TMS.Pages.User
 {
     public class DeleteModel : PageModel
     {
@@ -12,7 +12,7 @@ namespace TMS.Pages.Task
         private readonly string _apiUrl;
 
         [BindProperty]
-        public TaskDtos Task { get; set; } = new();
+        public UserDtos UserModel { get; set; } = new();
 
         [TempData]
         public string Message { get; set; }
@@ -24,7 +24,7 @@ namespace TMS.Pages.Task
             _apiUrl = configuration["ApiUrl"] ?? "http://localhost:5019";
         }
 
-        public async System.Threading.Tasks.Task<IActionResult> OnGetAsync(int id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             try
             {
@@ -34,41 +34,32 @@ namespace TMS.Pages.Task
                     return RedirectToPage("/Home/Login");
                 }
 
-                var userRole = HttpContext.Session.GetString("UserRole");
-                Console.WriteLine(userRole);
-                var isAdmin = !string.IsNullOrWhiteSpace(userRole) && userRole.Equals("Admin", StringComparison.OrdinalIgnoreCase);
-                
-                if (userRole != "Admin")
-                {
-                    return RedirectToPage("/Home/Index");
-                }
-
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                var apiEndpoint = $"{_apiUrl}/api/TaskItems/{id}";
+                var apiEndpoint = $"{_apiUrl}/api/Users/{id}";
                 var response = await _httpClient.GetAsync(apiEndpoint);
 
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
-                    var task = JsonSerializer.Deserialize<TaskDtos>(content, new JsonSerializerOptions
+                    var user = JsonSerializer.Deserialize<UserDtos>(content, new JsonSerializerOptions
                     {
                         PropertyNameCaseInsensitive = true
                     });
 
-                    if (task != null)
+                    if (user != null)
                     {
-                        Task = task;
+                        UserModel = user;
                         return Page();
                     }
                 }
 
-                Message = "Task not found.";
+                Message = "User not found.";
                 return RedirectToPage("./Index");
             }
             catch (Exception ex)
             {
-                Message = "Error loading task data.";
+                Message = "Error loading user data.";
                 return RedirectToPage("./Index");
             }
         }
@@ -93,24 +84,24 @@ namespace TMS.Pages.Task
 
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                var apiEndpoint = $"{_apiUrl}/api/TaskItems/{id}";
+                var apiEndpoint = $"{_apiUrl}/api/Users/{id}";
                 var response = await _httpClient.DeleteAsync(apiEndpoint);
 
                 if (response.IsSuccessStatusCode)
                 {
-                    Message = "Task deleted successfully!";
+                    Message = "User deleted successfully!";
                     return RedirectToPage("./Index");
                 }
                 else
                 {
                     var errorContent = await response.Content.ReadAsStringAsync();
-                    ModelState.AddModelError(string.Empty, $"Error deleting task: {response.StatusCode} - {errorContent}");
+                    ModelState.AddModelError(string.Empty, $"Error deleting user: {response.StatusCode} - {errorContent}");
                     return Page();
                 }
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Error deleting task: {ex.Message}");
+                ModelState.AddModelError(string.Empty, $"Error deleting user: {ex.Message}");
                 return Page();
             }
         }

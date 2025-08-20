@@ -1,156 +1,127 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using TMS.Models.ViewModels;
-using TMS.Services;
+using System.Text.Json;
+using System.Net.Http;
+using System.Text;
+using System.Net.Http.Headers;
 
 namespace TMS.Pages.Account
 {
     public class IndexModel : PageModel
     {
-        private readonly IAuthService _authService;
-        private readonly IApiService _apiService;
-        private readonly ILogger<IndexModel> _logger;
-
-        public IndexModel(IAuthService authService, IApiService apiService, ILogger<IndexModel> logger)
-        {
-            _authService = authService;
-            _apiService = apiService;
-            _logger = logger;
-        }
+        private readonly HttpClient _httpClient;
+        private readonly IConfiguration _configuration;
+        private readonly string _apiUrl;
 
         [BindProperty]
-        public UpdateUserRequest UserRequest { get; set; } = new();
+        public UpdateUserRequest UserProfile { get; set; } = new();
 
         [BindProperty]
-        public ChangePasswordRequest PasswordRequest { get; set; } = new();
+        public ChangePasswordRequest PasswordChange { get; set; } = new();
 
         public UserDtos? CurrentUser { get; set; }
-        public List<SelectListItem> RoleOptions { get; set; } = new();
-        public bool IsAdmin { get; set; }
+
+        public IndexModel(HttpClient httpClient, IConfiguration configuration)
+        {
+            _httpClient = httpClient;
+            _configuration = configuration;
+            _apiUrl = configuration["ApiUrl"] ?? "http://localhost:5019";
+        }
 
         public async Task<IActionResult> OnGetAsync()
         {
             try
             {
-                CurrentUser = await _authService.GetCurrentUserAsync();
-                if (CurrentUser == null)
+                var token = HttpContext.Session.GetString("JWTToken");
+                if (string.IsNullOrWhiteSpace(token))
                 {
                     return RedirectToPage("/Home/Login");
                 }
 
-                IsAdmin = await _authService.IsAdminAsync();
+                _httpClient.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
-                var parts = (CurrentUser.FullName ?? string.Empty).Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-                UserRequest.FirstName = parts.Length > 0 ? parts[0] : string.Empty;
-                UserRequest.LastName = parts.Length > 1 ? parts[1] : string.Empty;
-                UserRequest.Email = CurrentUser.Email;
-                UserRequest.PhoneNumber = CurrentUser.PhoneNumber ?? string.Empty;
-                UserRequest.Role = CurrentUser.Role;
+                var apiEndpoint = $"{_apiUrl}/api/Users/me";
+                var response = await _httpClient.GetAsync(apiEndpoint);
 
-                if (IsAdmin)
+                if (response.IsSuccessStatusCode)
                 {
-                    RoleOptions = new List<SelectListItem>
+                    var content = await response.Content.ReadAsStringAsync();
+               
+
+                    var user = JsonSerializer.Deserialize<UserDtos>(content, new JsonSerializerOptions
                     {
-                        new SelectListItem { Value = "User", Text = "User" },
-                        new SelectListItem { Value = "Admin", Text = "Admin" }
-                    };
-                }
+                        PropertyNameCaseInsensitive = true
+                    });
 
+                    if (user != null)
+                    {
+                        CurrentUser = user;
+
+                        UserProfile = new UpdateUserRequest
+                        {
+                            Id = user.Id,
+                            FirstName = user.FirstName,
+                            LastName = user.LastName,
+                            Email = user.Email,
+                            PhoneNumber = user.PhoneNumber,
+                            Role = user.Role
+                        };
+                    }
+                }
                 return Page();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                _logger.LogError(ex, "Error loading account page");
-                return RedirectToPage("/Error");
-            }
-        }
-
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPostUpdateProfileAsync()
-        {
-            try
-            {
-                var currentUser = await _authService.GetCurrentUserAsync();
-                if (currentUser == null)
-                {
-                    return RedirectToPage("/Home/Login");
-                }
-
-                if (!ModelState.IsValid)
-                {
-                    await OnGetAsync();
-                    return Page();
-                }
-
-                var updatedUser = await _apiService.UpdateUserAsync(currentUser.Id, UserRequest);
-                
-                if (updatedUser != null)
-                {
-                    TempData["SuccessMessage"] = "Profile updated successfully.";
-                    await OnGetAsync();
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "Failed to update profile.";
-                    await OnGetAsync();
-                }
-
-                return Page();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating profile");
-                TempData["ErrorMessage"] = "An error occurred while updating your profile.";
-                await OnGetAsync();
                 return Page();
             }
         }
 
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> OnPostChangePasswordAsync()
+        public async System.Threading.Tasks.Task<IActionResult> OnPostAsync()
         {
+            if (!ModelState.IsValid)
+            {
+                return Page();
+            }
+
             try
             {
-                var currentUser = await _authService.GetCurrentUserAsync();
-                if (currentUser == null)
+                var token = HttpContext.Session.GetString("JWTToken");
+                if (string.IsNullOrWhiteSpace(token))
                 {
                     return RedirectToPage("/Home/Login");
                 }
 
-                if (!ModelState.IsValid)
+                _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+                var userIdString = HttpContext.Session.GetString("UserId");
+                if (string.IsNullOrWhiteSpace(userIdString) || !int.TryParse(userIdString, out var userId))
                 {
-                    await OnGetAsync();
+                    ModelState.AddModelError(string.Empty, "Unable to determine current user.");
                     return Page();
                 }
 
-                if (PasswordRequest.NewPassword != PasswordRequest.ConfirmPassword)
-                {
-                    ModelState.AddModelError("PasswordRequest.ConfirmPassword", "New password and confirmation password do not match.");
-                    await OnGetAsync();
-                    return Page();
-                }
-
-                var success = await _apiService.ChangePasswordAsync(currentUser.Id, PasswordRequest);
+                var apiEndpoint = $"{_apiUrl}/api/Users/me";
+                var jsonContent = JsonSerializer.Serialize(UserProfile);
+                var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
                 
-                if (success)
+                var response = await _httpClient.PutAsync(apiEndpoint, content);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    TempData["SuccessMessage"] = "Password changed successfully.";
-                    PasswordRequest = new ChangePasswordRequest();
+                    return RedirectToPage("/Account/Index");
                 }
                 else
                 {
-                    TempData["ErrorMessage"] = "Failed to change password. Please check your current password.";
+                    var error = await response.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Failed to update profile: {response.StatusCode} - {error}");
+                    return Page();
                 }
-
-                await OnGetAsync();
-                return Page();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error changing password");
-                TempData["ErrorMessage"] = "An error occurred while changing your password.";
-                await OnGetAsync();
+                ModelState.AddModelError(string.Empty, $"Error updating profile: {ex.Message}");
                 return Page();
             }
         }

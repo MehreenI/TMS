@@ -4,232 +4,249 @@
     ViewData["Title"] = "Dashboard - Task Management System";
 }
 
-<div class="space-y-8">
-    <!-- Welcome Header -->
-    <div class="bg-gradient-to-r from-red-600 to-red-800 rounded-2xl p-8 text-white">
-        <div class="flex items-center justify-between">
-            <div>
-                <h1 class="text-3xl font-bold mb-2">Welcome back, @Model.CurrentUser?.FullName!</h1>
-                <p class="text-red-100">Here's what's happening with your tasks today.</p>
-            </div>
-            <div class="text-right">
-                <p class="text-red-100 text-sm">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
-                <p class="text-red-100 text-sm">@DateTime.Now.ToString("HH:mm")</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Dashboard Stats -->
-    @if (Model.DashboardStats != null)
-    {
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Total Tasks -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Total Tasks</p>
-                        <p class="text-3xl font-bold text-gray-900">@Model.DashboardStats.TotalTasks</p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <i data-lucide="clipboard-list" class="w-6 h-6 text-blue-600"></i>
-                    </div>
+<div class="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
+    <div class="max-w-7xl mx-auto space-y-6">
+        <!-- Welcome Header -->
+        <div class="bg-gradient-to-r from-red-600 via-red-700 to-red-800 rounded-2xl p-6 md:p-8 text-white shadow-lg">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div class="flex-1">
+                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">Welcome back</h1>
+                    <p class="text-red-100 text-sm md:text-base">Here's what's happening with your tasks today.</p>
                 </div>
-            </div>
-
-            <!-- Completed Tasks -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Completed</p>
-                        <p class="text-3xl font-bold text-green-600">@Model.DashboardStats.CompletedTasks</p>
-                    </div>
-                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                        <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pending Tasks -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Pending</p>
-                        <p class="text-3xl font-bold text-orange-600">@Model.DashboardStats.PendingTasks</p>
-                    </div>
-                    <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                        <i data-lucide="clock" class="w-6 h-6 text-orange-600"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Overdue Tasks -->
-            <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <p class="text-sm font-medium text-gray-600">Overdue</p>
-                        <p class="text-3xl font-bold text-red-600">@Model.DashboardStats.OverdueTasks</p>
-                    </div>
-                    <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-                        <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600"></i>
-                    </div>
+                <div class="text-left sm:text-right">
+                    <p class="text-red-100 text-sm md:text-base font-medium">@DateTime.Now.ToString("dddd, MMMM dd, yyyy")</p>
+                    <p class="text-red-100 text-xs md:text-sm">@DateTime.Now.ToString("HH:mm")</p>
                 </div>
             </div>
         </div>
-    }
 
-    <!-- Due Soon Tasks -->
-    @if (Model.DueSoonTasks != null && Model.DueSoonTasks.Any())
-    {
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <i data-lucide="alert-circle" class="w-5 h-5 text-orange-500 mr-2"></i>
-                    Due Soon (Next 24 Hours)
-                </h2>
+        <!-- Dashboard Stats -->
+        @if (Model.DashboardStats != null)
+        {
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                <!-- Total Tasks -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-600 mb-1">Total Tasks</p>
+                            <p class="text-2xl md:text-3xl font-bold text-gray-900">@Model.DashboardStats.TotalTasks</p>
+                        </div>
+                        <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="clipboard-list" class="w-6 h-6 text-blue-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Completed Tasks -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-600 mb-1">Completed</p>
+                            <p class="text-2xl md:text-3xl font-bold text-green-600">@Model.DashboardStats.CompletedTasks</p>
+                        </div>
+                        <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="check-circle" class="w-6 h-6 text-green-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Tasks -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-600 mb-1">Pending</p>
+                            <p class="text-2xl md:text-3xl font-bold text-orange-600">@Model.DashboardStats.PendingTasks</p>
+                        </div>
+                        <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="clock" class="w-6 h-6 text-orange-600"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Overdue Tasks -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-shadow duration-200">
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1">
+                            <p class="text-sm font-medium text-gray-600 mb-1">Overdue</p>
+                            <p class="text-2xl md:text-3xl font-bold text-red-600">@Model.DashboardStats.OverdueTasks</p>
+                        </div>
+                        <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                            <i data-lucide="alert-triangle" class="w-6 h-6 text-red-600"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="p-6">
-                <div class="space-y-4">
-                    @foreach (var task in Model.DueSoonTasks.Take(5))
-                    {
-                        <div class="flex items-center justify-between p-4 bg-orange-50 rounded-lg border border-orange-200">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center">
-                                    <i data-lucide="clock" class="w-5 h-5 text-orange-600"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium text-gray-800">@task.Title</h3>
-                                    <p class="text-sm text-gray-600">Due: @task.DueDate?.ToString("MMM dd, yyyy HH:mm")</p>
-                                </div>
+        }
+
+        <!-- Main Content Grid -->
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+            <!-- Left Column (spans 2 columns on xl screens) -->
+            <div class="xl:col-span-2 space-y-6">
+                <!-- Due Soon Tasks -->
+                @if (Model.DueSoonTasks != null && Model.DueSoonTasks.Any())
+                {
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-4 md:p-6 border-b border-gray-200">
+                            <h2 class="text-lg md:text-xl font-semibold text-gray-800 flex items-center">
+                                <i data-lucide="alert-circle" class="w-5 h-5 text-orange-500 mr-2 flex-shrink-0"></i>
+                                <span>Due Soon (Next 24 Hours)</span>
+                            </h2>
+                        </div>
+                        <div class="p-4 md:p-6">
+                            <div class="space-y-3">
+                                @foreach (var task in Model.DueSoonTasks.Take(5))
+                                {
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-orange-50 rounded-lg border border-orange-200 gap-3">
+                                        <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                            <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i data-lucide="clock" class="w-5 h-5 text-orange-600"></i>
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <h3 class="font-medium text-gray-800 truncate">@task.Title</h3>
+                                                <p class="text-sm text-gray-600">Due: @task.Deadline?.ToString("MMM dd, yyyy HH:mm")</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between sm:justify-end space-x-2 flex-shrink-0">
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                                @(task.Priority == "High" ? "bg-red-100 text-red-800" :
+                                                  task.Priority == "Medium" ? "bg-yellow-100 text-yellow-800" :
+                                                  "bg-green-100 text-green-800")">
+                                                @task.Priority
+                                            </span>
+                                            <a asp-page="/Task/View" asp-route-id="@task.Id"
+                                               class="text-orange-600 hover:text-orange-700 p-1 rounded hover:bg-orange-100 transition-colors">
+                                                <i data-lucide="eye" class="w-4 h-4"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="px-2 py-1 text-xs font-medium rounded-full 
-                                    @(task.Priority == "High" ? "bg-red-100 text-red-800" : 
-                                      task.Priority == "Medium" ? "bg-yellow-100 text-yellow-800" : 
-                                      "bg-green-100 text-green-800")">
-                                    @task.Priority
-                                </span>
-                                <a asp-page="/Task/View" asp-route-id="@task.Id" class="text-orange-600 hover:text-orange-700">
-                                    <i data-lucide="eye" class="w-4 h-4"></i>
+                            @if (Model.DueSoonTasks.Count > 5)
+                            {
+                                <div class="mt-4 text-center">
+                                    <a asp-page="/Task/Index" class="text-orange-600 hover:text-orange-700 font-medium text-sm">
+                                        View all @Model.DueSoonTasks.Count due soon tasks →
+                                    </a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Recent Tasks -->
+                @if (Model.MyTasks != null && Model.MyTasks.Any())
+                {
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-4 md:p-6 border-b border-gray-200">
+                            <h2 class="text-lg md:text-xl font-semibold text-gray-800 flex items-center">
+                                <i data-lucide="list" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0"></i>
+                                <span>@(Model.IsAdmin ? "Recent Tasks" : "My Recent Tasks")</span>
+                            </h2>
+                        </div>
+                        <div class="p-4 md:p-6">
+                            <div class="space-y-3">
+                                @foreach (var task in Model.MyTasks.Take(5))
+                                {
+                                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 bg-gray-50 rounded-lg gap-3">
+                                        <div class="flex items-center space-x-3 flex-1 min-w-0">
+                                            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                                <i data-lucide="clipboard-list" class="w-5 h-5 text-blue-600"></i>
+                                            </div>
+                                            <div class="min-w-0 flex-1">
+                                                <h3 class="font-medium text-gray-800 truncate">@task.Title</h3>
+                                                <p class="text-sm text-gray-600">
+                                                    @(Model.IsAdmin ? $"Assigned to: {task.AssignedUserName}" : $"Status: {task.Status}")
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between sm:justify-end space-x-2 flex-shrink-0">
+                                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                                @(task.Status == "Done" ? "bg-green-100 text-green-800" :
+                                                  task.Status == "InProgress" ? "bg-blue-100 text-blue-800" :
+                                                  "bg-gray-100 text-gray-800")">
+                                                @task.Status
+                                            </span>
+                                            <a asp-page="/Task/View" asp-route-id="@task.Id"
+                                               class="text-blue-600 hover:text-blue-700 p-1 rounded hover:bg-blue-100 transition-colors">
+                                                <i data-lucide="eye" class="w-4 h-4"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="mt-4 text-center">
+                                <a asp-page="/Task/Index" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                                    View all tasks →
                                 </a>
                             </div>
                         </div>
-                    }
-                </div>
-                @if (Model.DueSoonTasks.Count > 5)
-                {
-                    <div class="mt-4 text-center">
-                        <a asp-page="/Task/Index" class="text-orange-600 hover:text-orange-700 font-medium">
-                            View all @Model.DueSoonTasks.Count due soon tasks →
-                        </a>
                     </div>
                 }
             </div>
-        </div>
-    }
 
-    <!-- Recent Tasks -->
-    @if (Model.MyTasks != null && Model.MyTasks.Any())
-    {
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <i data-lucide="list" class="w-5 h-5 text-blue-500 mr-2"></i>
-                    @(Model.IsAdmin ? "Recent Tasks" : "My Recent Tasks")
-                </h2>
-            </div>
-            <div class="p-6">
-                <div class="space-y-4">
-                    @foreach (var task in Model.MyTasks.Take(5))
-                    {
-                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                            <div class="flex items-center space-x-4">
-                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                                    <i data-lucide="clipboard-list" class="w-5 h-5 text-blue-600"></i>
-                                </div>
-                                <div>
-                                    <h3 class="font-medium text-gray-800">@task.Title</h3>
-                                    <p class="text-sm text-gray-600">
-                                        @(Model.IsAdmin ? $"Assigned to: {task.AssignedToUserName}" : $"Status: {task.Status}")
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex items-center space-x-2">
-                                <span class="px-2 py-1 text-xs font-medium rounded-full 
-                                    @(task.Status == "Done" ? "bg-green-100 text-green-800" : 
-                                      task.Status == "InProgress" ? "bg-blue-100 text-blue-800" : 
-                                      "bg-gray-100 text-gray-800")">
-                                    @task.Status
-                                </span>
-                                <a asp-page="/Task/View" asp-route-id="@task.Id" class="text-blue-600 hover:text-blue-700">
-                                    <i data-lucide="eye" class="w-4 h-4"></i>
-                                </a>
-                            </div>
-                        </div>
-                    }
-                </div>
-                <div class="mt-4 text-center">
-                    <a asp-page="/Task/Index" class="text-blue-600 hover:text-blue-700 font-medium">
-                        View all tasks →
-                    </a>
-                </div>
-            </div>
-        </div>
-    }
-
-    <!-- Announcements -->
-    @if (Model.Announcements != null && Model.Announcements.Any())
-    {
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-            <div class="p-6 border-b border-gray-200">
-                <h2 class="text-xl font-semibold text-gray-800 flex items-center">
-                    <i data-lucide="megaphone" class="w-5 h-5 text-purple-500 mr-2"></i>
-                    Recent Announcements
-                </h2>
-            </div>
-            <div class="p-6">
-                <div class="space-y-4">
-                    @foreach (var announcement in Model.Announcements.Take(3))
-                    {
-                        <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
-                            <h3 class="font-medium text-gray-800 mb-2">@announcement.Title</h3>
-                            <p class="text-sm text-gray-600 mb-2">@announcement.Content</p>
-                            <p class="text-xs text-gray-500">Posted on @announcement.CreatedAt.ToString("MMM dd, yyyy")</p>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    }
-
-    <!-- Quick Actions -->
-    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
-        <div class="p-6 border-b border-gray-200">
-            <h2 class="text-xl font-semibold text-gray-800">Quick Actions</h2>
-        </div>
-        <div class="p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <a asp-page="/Task/Index" class="flex items-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                    <i data-lucide="clipboard-list" class="w-6 h-6 text-blue-600 mr-3"></i>
-                    <span class="font-medium text-gray-800">View Tasks</span>
-                </a>
-                
-                @if (Model.IsAdmin)
+            <!-- Right Column (sidebar on xl screens) -->
+            <div class="space-y-6">
+                <!-- Announcements -->
+                @if (Model.Announcements != null && Model.Announcements.Any())
                 {
-                    <a asp-page="/Task/Create" class="flex items-center p-4 bg-green-50 rounded-lg hover:bg-green-100 transition-colors">
-                        <i data-lucide="plus" class="w-6 h-6 text-green-600 mr-3"></i>
-                        <span class="font-medium text-gray-800">Create Task</span>
-                    </a>
-                    
-                    <a asp-page="/User/Index" class="flex items-center p-4 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors">
-                        <i data-lucide="users" class="w-6 h-6 text-purple-600 mr-3"></i>
-                        <span class="font-medium text-gray-800">Manage Users</span>
-                    </a>
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                        <div class="p-4 md:p-6 border-b border-gray-200">
+                            <h2 class="text-lg md:text-xl font-semibold text-gray-800 flex items-center">
+                                <i data-lucide="megaphone" class="w-5 h-5 text-purple-500 mr-2 flex-shrink-0"></i>
+                                <span>Announcements</span>
+                            </h2>
+                        </div>
+                        <div class="p-4 md:p-6">
+                            <div class="space-y-3">
+                                @foreach (var announcement in Model.Announcements.Take(3))
+                                {
+                                    <div class="p-4 bg-purple-50 rounded-lg border border-purple-200">
+                                        <h3 class="font-medium text-gray-800 mb-2 text-sm">@announcement.Title</h3>
+                                        <p class="text-sm text-gray-600 mb-2 line-clamp-3">@announcement.Content</p>
+                                        <p class="text-xs text-gray-500">@announcement.CreatedAt.ToString("MMM dd, yyyy")</p>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 }
-                
-                <a asp-page="/Account/Index" class="flex items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <i data-lucide="user" class="w-6 h-6 text-gray-600 mr-3"></i>
-                    <span class="font-medium text-gray-800">Profile Settings</span>
-                </a>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200">
+                    <div class="p-4 md:p-6 border-b border-gray-200">
+                        <h2 class="text-lg md:text-xl font-semibold text-gray-800">Quick Actions</h2>
+                    </div>
+                    <div class="p-4 md:p-6">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-1 gap-3">
+                            <a asp-page="/Task/Index"
+                               class="flex items-center p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors duration-200 group">
+                                <i data-lucide="clipboard-list" class="w-5 h-5 text-blue-600 mr-3 group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium text-gray-800 text-sm">View Tasks</span>
+                            </a>
+
+                            @if (Model.IsAdmin)
+                            {
+                                <a asp-page="/Task/Create"
+                                   class="flex items-center p-3 bg-green-50 rounded-lg hover:bg-green-100 transition-colors duration-200 group">
+                                    <i data-lucide="plus" class="w-5 h-5 text-green-600 mr-3 group-hover:scale-110 transition-transform"></i>
+                                    <span class="font-medium text-gray-800 text-sm">Create Task</span>
+                                </a>
+
+                                <a asp-page="/User/Index"
+                                   class="flex items-center p-3 bg-purple-50 rounded-lg hover:bg-purple-100 transition-colors duration-200 group">
+                                    <i data-lucide="users" class="w-5 h-5 text-purple-600 mr-3 group-hover:scale-110 transition-transform"></i>
+                                    <span class="font-medium text-gray-800 text-sm">Manage Users</span>
+                                </a>
+                            }
+
+                            <a asp-page="/Account/Index"
+                               class="flex items-center p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200 group">
+                                <i data-lucide="user" class="w-5 h-5 text-gray-600 mr-3 group-hover:scale-110 transition-transform"></i>
+                                <span class="font-medium text-gray-800 text-sm">Profile Settings</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

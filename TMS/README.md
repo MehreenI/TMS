@@ -74,7 +74,7 @@ Update `appsettings.json` with your API endpoint:
 ```json
 {
   "ApiSettings": {
-    "BaseUrl": "https://localhost:7001",
+    "BaseUrl": "http://localhost:5019",
     "Timeout": 30
   }
 }
