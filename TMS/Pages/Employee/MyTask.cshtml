@@ -14,6 +14,8 @@
             </div>
         </div>
 
+
+
         <!-- Tasks Table -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             <div class="overflow-x-auto">
@@ -51,7 +53,7 @@
                                     _ => "bg-gray-100 text-gray-800"
                                 };
 
-                                <tr class="hover:bg-gray-50">
+                                <tr class="hover:bg-gray-50 @Model.GetRowClass(task)">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <input type="checkbox" class="rounded border-gray-300 text-red-600 focus:ring-red-500" />
                                     </td>
