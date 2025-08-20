@@ -173,7 +173,7 @@
                                     _ => "bg-gray-100 text-gray-800"
                                 };
 
-                                <tr class="hover:bg-gray-50">
+                                <tr class="hover:bg-gray-50 @Model.GetRowClass(task)">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <input type="checkbox" class="rounded border-gray-300 text-red-600 focus:ring-red-500" />
                                     </td>

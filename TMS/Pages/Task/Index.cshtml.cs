@@ -65,7 +65,7 @@ namespace TMS.Pages.Task
 
                     if (tasks != null)
                     {
-                        Tasks = tasks;
+                        Tasks = SortTasks(tasks);
 
                         if (!string.IsNullOrWhiteSpace(SearchTerm))
                         {
@@ -155,5 +155,43 @@ namespace TMS.Pages.Task
         public int GetCompletedTasks() => Tasks.Count(t => t.Status?.Equals("Completed", StringComparison.OrdinalIgnoreCase) ?? false);
         public int GetOverdueTasks() => Tasks.Count(t => t.Deadline.HasValue && t.Deadline.Value < DateTime.Now &&
             !t.Status?.Equals("Completed", StringComparison.OrdinalIgnoreCase) == true);
+
+        private List<TaskDtos> SortTasks(List<TaskDtos> tasks)
+        {
+            return tasks.OrderBy(t => t.Status == "Done" || t.Status == "Completed" ? 1 : 0)
+                        .ThenBy(t => t.Deadline ?? DateTime.MaxValue)
+                        .ThenByDescending(t => GetPriorityOrder(t.Priority))
+                        .ToList();
+        }
+
+        private int GetPriorityOrder(string priority)
+        {
+            return priority?.ToLower() switch
+            {
+                "high" => 3,
+                "medium" => 2,
+                "low" => 1,
+                _ => 0
+            };
+        }
+
+        public bool IsDueSoon(TaskDtos task)
+        {
+            if (!task.Deadline.HasValue || task.Status == "Done" || task.Status == "Completed")
+                return false;
+            return task.Deadline.Value <= DateTime.Now.AddHours(24);
+        }
+
+        public string GetRowClass(TaskDtos task)
+        {
+            if (task.Status == "Done" || task.Status == "Completed")
+                return "hover:bg-gray-50 opacity-75";
+            if (IsDueSoon(task))
+                return "bg-red-100 border-l-4 border-red-500 hover:bg-red-200";
+            return "hover:bg-gray-50";
+        }
+
     }
+
+
 }
