@@ -5,14 +5,14 @@
         <div class="flex items-center justify-between mb-6">
             <h1 class="text-3xl font-bold text-gray-800">User Details</h1>
             <div class="flex space-x-3">
-                <button onclick="editUser(currentUserId)" class="btn-primary px-4 py-2">
+                <a asp-page="./Edit" asp-route-id="@Model.UserModel.Id" class="btn-primary px-4 py-2">
                     <i data-lucide="edit" class="w-4 h-4 inline mr-2"></i>
                     Edit User
-                </button>
-                <button onclick="showView('all-users')" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
+                </a>
+                <a asp-page="./Index" class="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50 transition-colors">
                     <i data-lucide="arrow-left" class="w-4 h-4 inline mr-2"></i>
                     Back to Users
-                </button>
+                </a>
             </div>
         </div>
 
