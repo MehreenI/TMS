@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using TMS.Models.ViewModels;
 using TMS.Models;
 using System.Text.Json;
+using TMS.Constants;
 
 namespace TMS.Pages.Home
 {
@@ -30,7 +31,6 @@ namespace TMS.Pages.Home
         {
             try
             {
-                // Check if user is authenticated
                 var token = HttpContext.Session.GetString("JWTToken");
                 if (string.IsNullOrWhiteSpace(token))
                 {
@@ -42,6 +42,9 @@ namespace TMS.Pages.Home
                 var email = HttpContext.Session.GetString("Email");
 
                 if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(fullName))
+                {
+                    return RedirectToPage("/Home/Login");
+                }
 
                 CurrentUser = new UserDtos
                 {
@@ -49,6 +52,8 @@ namespace TMS.Pages.Home
                     Email = email ?? "",
                 };
 
+                var userRole = HttpContext.Session.GetString(AppConstants.SessionKeys.UserRole);
+                IsAdmin = (userRole == AppConstants.Roles.Admin);
 
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
 
@@ -63,7 +68,7 @@ namespace TMS.Pages.Home
                             PropertyNameCaseInsensitive = true
                         });
                     }
-                
+
                     var tasksResponse = await _httpClient.GetAsync($"{_apiUrl}/api/TaskItems/my-tasks");
                     if (tasksResponse.IsSuccessStatusCode)
                     {
@@ -73,7 +78,7 @@ namespace TMS.Pages.Home
                             PropertyNameCaseInsensitive = true
                         });
                     }
-                
+
                     var dueSoonResponse = await _httpClient.GetAsync($"{_apiUrl}/api/TaskItems/due-soon?hours=24");
                     if (dueSoonResponse.IsSuccessStatusCode)
                     {
@@ -83,7 +88,7 @@ namespace TMS.Pages.Home
                             PropertyNameCaseInsensitive = true
                         });
                     }
-               
+
                     var announcementsResponse = await _httpClient.GetAsync($"{_apiUrl}/api/Announcements");
                     if (announcementsResponse.IsSuccessStatusCode)
                     {
@@ -97,7 +102,6 @@ namespace TMS.Pages.Home
                 catch (Exception)
                 {
                     return RedirectToPage("/Error");
-
                 }
 
                 return Page();

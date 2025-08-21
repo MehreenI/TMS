@@ -64,7 +64,7 @@ namespace TMS.Middleware
                     if (isAdminRoute)
                     {
                         var userRole = context.Session.GetString(AppConstants.SessionKeys.UserRole);
-                        var isAdmin = (userRole == "Admin");
+                        var isAdmin = (userRole == AppConstants.Roles.Admin);
                         
                         if (!isAdmin)
                         {

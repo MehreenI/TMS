@@ -152,9 +152,9 @@ namespace TMS.Pages.Task
 
         public int GetTotalTasks() => Tasks.Count;
         public int GetInProgressTasks() => Tasks.Count(t => t.Status?.Equals("InProgress", StringComparison.OrdinalIgnoreCase) ?? false);
-        public int GetCompletedTasks() => Tasks.Count(t => t.Status?.Equals("Completed", StringComparison.OrdinalIgnoreCase) ?? false);
+        public int GetCompletedTasks() => Tasks.Count(t => t.Status?.Equals("Done", StringComparison.OrdinalIgnoreCase) ?? false);
         public int GetOverdueTasks() => Tasks.Count(t => t.Deadline.HasValue && t.Deadline.Value < DateTime.Now &&
-            !t.Status?.Equals("Completed", StringComparison.OrdinalIgnoreCase) == true);
+            !t.Status?.Equals("Done", StringComparison.OrdinalIgnoreCase) == true);
 
         private List<TaskDtos> SortTasks(List<TaskDtos> tasks)
         {
